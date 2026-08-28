@@ -1,44 +1,83 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-example-type="planning">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="color-scheme" content="light">
-  <title>大一四年雷达｜北大新生生存导航</title>
+  <title>四年行动时间轴｜燕园路径签</title>
   <style>
-    :root{--stone:#dce6e3;--paper:#f7f8f5;--ink:#17231f;--red:#7c2435;--yellow:#d9a928;--lake:#2d6274;--line:#9aaca6;--muted:#5d6b66;--shadow:0 18px 50px rgba(23,35,31,.11)}
-    *{box-sizing:border-box}html{background:var(--stone);color:var(--ink);font-family:"PingFang SC","Microsoft YaHei",sans-serif;line-height:1.55}body{margin:0;min-height:100vh;background:linear-gradient(135deg,rgba(124,36,53,.035) 25%,transparent 25%) 0 0/28px 28px}a{color:var(--lake);text-underline-offset:3px}button{font:inherit}button:focus-visible,a:focus-visible,summary:focus-visible,input:focus-visible{outline:3px solid var(--yellow);outline-offset:3px}
-    .shell{width:min(1160px,calc(100% - 32px));margin:24px auto 56px;background:var(--paper);border:1px solid rgba(23,35,31,.18);box-shadow:var(--shadow)}.utility{display:flex;gap:12px;flex-wrap:wrap;padding:12px 18px;background:var(--ink);color:white;font:600 12px/1.4 "SFMono-Regular",Consolas,monospace}.utility .nonofficial{margin-left:auto;color:#ffe4a1}
-    header{padding:42px clamp(22px,5vw,64px) 36px;border-bottom:1px solid rgba(23,35,31,.18)}.eyebrow{margin:0 0 10px;color:var(--red);font:700 13px "SFMono-Regular",Consolas,monospace;letter-spacing:.08em}h1{max-width:900px;margin:0;font:700 clamp(34px,6vw,70px)/1.02 "STSong","Songti SC",serif;letter-spacing:-.04em}.lead{max-width:790px;margin:18px 0 0;font-size:18px;color:#34443e}.lead strong{color:var(--red)}
-    .snapshot{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(23,35,31,.18);border-bottom:1px solid rgba(23,35,31,.18)}.metric{padding:18px clamp(18px,3vw,32px);background:white}.metric span{display:block;color:var(--muted);font-size:12px}.metric strong{display:block;margin-top:4px;font:700 22px "STSong","Songti SC",serif}
-    .controls{display:flex;gap:10px;flex-wrap:wrap;padding:20px clamp(22px,5vw,64px);border-bottom:1px solid rgba(23,35,31,.16)}.filter{min-height:44px;padding:8px 15px;border:1px solid var(--ink);border-radius:999px;background:transparent;color:var(--ink);cursor:pointer}.filter[aria-pressed="true"]{background:var(--ink);color:white}.export{margin-left:auto;min-height:44px;padding:8px 15px;border:1px solid var(--red);background:var(--red);color:white;cursor:pointer}
-    .timeline{position:relative;padding:34px clamp(22px,5vw,64px) 46px}.timeline::before{content:"";position:absolute;top:52px;bottom:60px;left:calc(clamp(22px,5vw,64px) + 20px);width:4px;background:linear-gradient(var(--yellow),var(--red),var(--lake))}.phase{position:relative;display:grid;grid-template-columns:64px minmax(0,1fr);gap:18px;margin-bottom:28px}.phase[hidden]{display:none}.marker{position:relative;z-index:1;width:44px;height:44px;display:grid;place-items:center;border:4px solid var(--ink);border-radius:50%;background:var(--paper);font:800 11px "SFMono-Regular",Consolas,monospace}.phase:first-child .marker{background:var(--yellow)}.phase-body{background:white;border:1px solid rgba(23,35,31,.24);padding:22px}.phase-head{display:flex;justify-content:space-between;gap:18px;align-items:flex-start}.phase h2{margin:0;font:700 30px/1.1 "STSong","Songti SC",serif}.window{padding:5px 8px;background:var(--stone);color:var(--lake);font-size:11px;font-weight:700;white-space:nowrap}.tasks{display:grid;gap:10px;margin-top:18px}.task{display:grid;grid-template-columns:28px 1fr auto;gap:12px;align-items:start;padding:14px;background:#f0f3f0;border-left:4px solid var(--line)}.task.verified{border-left-color:var(--red)}.task.watch{border-left-color:var(--yellow)}.task input{width:20px;height:20px;margin-top:2px;accent-color:var(--red)}.task h3{margin:0;font-size:15px}.task p{margin:5px 0 0;color:#4c5b55;font-size:13px}.badge{padding:4px 7px;background:white;font-size:11px;white-space:nowrap}.verified .badge{color:var(--red)}.watch .badge{color:#735b00}.task a{display:inline-block;margin-top:7px;font-size:12px}.note{margin-top:16px;padding:14px;border-left:4px solid var(--lake);background:#eaf2f4;color:#344b54}
-    .evidence{padding:0 clamp(22px,5vw,64px) 38px}details{border-top:1px solid rgba(23,35,31,.25)}summary{min-height:52px;display:flex;align-items:center;cursor:pointer;font-weight:700}.sources{display:grid;grid-template-columns:1fr 1fr;gap:22px;padding-bottom:20px}.sources h3{margin:0 0 8px;font-size:14px}.sources ul{margin:0;padding-left:20px;color:#34443e}footer{padding:20px clamp(22px,5vw,64px);background:#edf1ee;color:#4b5a55;font-size:13px}.toast{position:fixed;right:18px;bottom:18px;padding:12px 16px;background:var(--ink);color:white;box-shadow:var(--shadow);opacity:0;transform:translateY(10px);pointer-events:none;transition:.2s ease}.toast.show{opacity:1;transform:none}
-    @media(max-width:760px){.shell{width:min(100% - 16px,1160px);margin:8px auto 24px}.utility .nonofficial{margin-left:0}.snapshot{grid-template-columns:1fr}.export{margin-left:0;width:100%}.timeline::before{left:calc(clamp(22px,5vw,64px) + 16px)}.phase{grid-template-columns:50px minmax(0,1fr)}.marker{width:36px;height:36px;border-width:3px}.phase-head{display:block}.window{display:inline-block;margin-top:10px}.task{grid-template-columns:26px 1fr}.badge{grid-column:2}.sources{grid-template-columns:1fr}}
-    @media(max-width:430px){.phase-body{padding:17px}.controls .filter{flex:1 1 calc(50% - 10px)}}
-    @media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important}}
+    :root{--mist:#dce6e3;--paper:#f7f8f5;--ink:#17231f;--red:#7c2435;--gold:#d9a928;--blue:#2d6274;--line:#b6c8c2;--muted:#5b6964;--shadow:0 18px 45px rgba(23,35,31,.10)}
+    *{box-sizing:border-box}body{margin:0;background:var(--mist);color:var(--ink);font-family:"PingFang SC","Microsoft YaHei",sans-serif;line-height:1.55}button,a{font:inherit}button:focus-visible,a:focus-visible,summary:focus-visible{outline:3px solid var(--gold);outline-offset:3px}.shell{width:min(1120px,calc(100% - 32px));margin:24px auto 48px}.topline{display:flex;justify-content:space-between;gap:16px;align-items:center;margin-bottom:14px;color:var(--muted);font:12px/1.4 ui-monospace,monospace}.demo{padding:6px 10px;border:1px solid var(--line);border-radius:99px;background:rgba(247,248,245,.72)}.board{background:var(--paper);border-radius:26px;box-shadow:var(--shadow);overflow:hidden}.hero{position:relative;padding:34px 38px 30px;border-bottom:1px solid var(--line)}.hero::after{content:"NOW";position:absolute;right:30px;top:12px;color:#e6ece9;font:900 clamp(72px,14vw,150px)/1 ui-monospace,monospace;letter-spacing:-.1em;z-index:0}.hero>*{position:relative;z-index:1}.eyebrow{margin:0 0 8px;color:var(--red);font:700 12px/1.3 ui-monospace,monospace;letter-spacing:.12em}.hero h1{margin:0;max-width:720px;font:700 clamp(30px,5vw,58px)/1.06 STSong,"Songti SC",serif;letter-spacing:-.04em}.hero p{margin:14px 0 0;color:var(--muted)}.hero-primary{margin-top:18px}.controls{display:flex;flex-wrap:wrap;gap:9px;padding:18px 38px;border-bottom:1px solid var(--line);background:#edf2ef}.controls button{min-height:44px;padding:0 14px;border:1px solid var(--line);border-radius:99px;background:transparent;cursor:pointer}.controls button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}.timeline{position:relative;padding:36px 38px 30px}.timeline::before{content:"";position:absolute;left:0;right:0;top:72px;height:4px;background:linear-gradient(90deg,var(--red) 0 18%,var(--gold) 18% 42%,var(--blue) 42% 70%,var(--line) 70%)}.stages{display:grid;grid-template-columns:1.1fr 1fr 1fr 1fr;gap:22px}.stages.focused{grid-template-columns:minmax(0,520px)}.stage{position:relative;padding-top:54px}.stage::before{content:"";position:absolute;top:26px;left:0;width:22px;height:22px;border:5px solid var(--paper);border-radius:50%;background:var(--blue);box-shadow:0 0 0 2px var(--blue)}.stage.now::before{background:var(--red);box-shadow:0 0 0 2px var(--red),0 0 0 9px #f0dfe2}.stage.next::before{background:var(--gold);box-shadow:0 0 0 2px var(--gold)}.stage time{color:var(--blue);font:700 11px/1.3 ui-monospace,monospace;letter-spacing:.08em}.stage h2{margin:7px 0 8px;font:700 21px/1.2 STSong,"Songti SC",serif}.stage p{margin:0 0 13px;color:var(--muted);font-size:13px}.task{padding:12px 0;border-top:1px solid var(--line)}.task strong{display:block;font-size:14px}.task span{font-size:12px;color:var(--muted)}.actions{display:flex;gap:10px;margin-top:18px}.primary,.secondary{display:inline-flex;min-height:46px;align-items:center;justify-content:center;padding:0 15px;border-radius:10px;text-decoration:none;font-weight:700;cursor:pointer}.primary{border:0;background:var(--red);color:#fff}.secondary{border:1px solid var(--blue);background:transparent;color:var(--blue)}.change{margin:0 38px 28px;padding:14px 17px;border-left:4px solid var(--gold);background:#f8f2d8}.evidence{padding:0 38px 34px}.evidence details{border-top:1px solid var(--line);padding-top:18px}.evidence summary{min-height:44px;display:flex;align-items:center;cursor:pointer;font-weight:700}.source{font-size:13px;color:var(--muted)}.source a{color:var(--blue)}.hidden{display:none}
+    @media(max-width:820px){.timeline::before{left:49px;right:auto;top:36px;bottom:30px;width:4px;height:auto;background:linear-gradient(var(--red) 0 18%,var(--gold) 18% 42%,var(--blue) 42% 70%,var(--line) 70%)}.stages{grid-template-columns:1fr;gap:8px}.stage{padding:0 0 28px 62px}.stage::before{top:3px;left:1px}.stage.now::before{top:3px}.hero::after{font-size:82px}.stage[hidden]{display:none}}
+    @media(max-width:600px){.shell{width:min(100% - 20px,1120px);margin-top:10px}.board{border-radius:18px}.hero{padding:25px 22px}.hero h1{font-size:38px}.hero::after{display:none}.controls{padding:15px 22px}.timeline{padding:28px 22px 18px}.timeline::before{left:33px}.stage{padding-left:48px}.change{margin:0 22px 22px}.evidence{padding:0 22px 24px}.actions{flex-direction:column}.primary,.secondary{width:100%}.topline{align-items:flex-start}}
+    @media(max-width:380px){.shell{width:calc(100% - 12px)}.hero h1{font-size:34px}.controls{display:grid;grid-template-columns:1fr 1fr}.topline{font-size:11px}}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}}
   </style>
 </head>
 <body>
-  <main class="shell">
-    <div class="utility"><span>2026—2027 学年</span><span>四年雷达</span><span>示例核验：2026-08-28</span><span class="nonofficial">非北京大学官方产品</span></div>
-    <header><p class="eyebrow">不是四年待办清单 · 是下一次该看哪里</p><h1>大一不用把四年都做完，但要知道哪些事不能等到毕业前才看。</h1><p class="lead"><strong>现在先做三件事：</strong>对照本专业培养方案、核对 2026 级新增培养要求、把秋季选课关键日期放进日历。奖学金和推免先找到本院系入口，不做结果预测。</p></header>
-    <section class="snapshot" aria-label="雷达摘要"><div class="metric"><span>当前重点</span><strong>培养方案与选课</strong></div><div class="metric"><span>明确日期</span><strong>只导出官方核实项</strong></div><div class="metric"><span>情绪基调</span><strong>知道入口，不提前焦虑</strong></div></section>
-    <nav class="controls" aria-label="筛选时间阶段"><button class="filter" type="button" data-filter="all" aria-pressed="true">全部阶段</button><button class="filter" type="button" data-filter="now" aria-pressed="false">现在</button><button class="filter" type="button" data-filter="term" aria-pressed="false">本学期</button><button class="filter" type="button" data-filter="later" aria-pressed="false">以后关注</button><button class="export" id="export" type="button">导出已核实日历</button></nav>
-    <section class="timeline" aria-live="polite">
-      <article class="phase" data-phase="now"><div class="marker">NOW</div><div class="phase-body"><div class="phase-head"><h2>现在：先把底图铺好</h2><span class="window">开学前后</span></div><div class="tasks"><label class="task verified"><input type="checkbox"><span><h3>下载 2026 级学生手册和本专业培养方案</h3><p>不要只看本学期“好抢的课”；先知道必修、选修、通识与专业要求分别在哪里。</p><a href="https://dean.pku.edu.cn/web/download.php" target="_blank" rel="noreferrer">教务部信息下载</a></span><span class="badge">官方入口</span></label><label class="task verified"><input type="checkbox"><span><h3>核对 2026 级新增课程要求</h3><p>2026—2027 秋季选课通知明确提到国家安全教育与心理健康课程要求；同时核对体育、劳动教育和通识要求。[1]</p><a href="https://dean.pku.edu.cn/web/notice_details.php?id=751" target="_blank" rel="noreferrer">查看当学期选课通知</a></span><span class="badge">当年确认</span></label></div><p class="note"><strong>这对你意味着什么：</strong>先建立“我毕业需要完成什么”的清单，再决定这学期选什么；不需要一次排满四年。</p></div></article>
-      <article class="phase" data-phase="term"><div class="marker">T1</div><div class="phase-body"><div class="phase-head"><h2>本学期：只盯真实节点</h2><span class="window">2026 秋</span></div><div class="tasks"><label class="task verified"><input type="checkbox"><span><h3>完成秋季补退选核对</h3><p>示例已核实日期：2026 年 9 月 17 日 10:00 选课系统关闭。导出按钮只包含这类官方明确日期。[1]</p></span><span class="badge">可导出</span></label><label class="task watch"><input type="checkbox"><span><h3>找到本院系综合测评与奖学金入口</h3><p>先确认评审通知发布在哪里、适用对象是谁；没有本院系当年文件时，不使用其他院系规则补答案。</p><a href="https://xxgk.pku.edu.cn/gksx/xsgl/xjgl/index.htm" target="_blank" rel="noreferrer">学校学生管理入口</a></span><span class="badge">关注窗口</span></label><label class="task watch"><input type="checkbox"><span><h3>期中检查课程适配度</h3><p>作业量、考核方式或先修要求明显不适配时，查询当学期中期退课通知，不凭经验猜日期。</p></span><span class="badge">等当期通知</span></label></div></div></article>
-      <article class="phase" data-phase="later"><div class="marker">NEXT</div><div class="phase-body"><div class="phase-head"><h2>以后关注：知道入口即可</h2><span class="window">大二至毕业前</span></div><div class="tasks"><label class="task watch"><input type="checkbox"><span><h3>科研、交流、辅修或双专业按兴趣再深入</h3><p>这些不是所有人的必做项。产生真实兴趣后，再查当年项目、资格和院系安排。</p><a href="https://dean.pku.edu.cn/web/student.php" target="_blank" rel="noreferrer">教务部学生服务</a></span><span class="badge">非必做</span></label><label class="task watch"><input type="checkbox"><span><h3>推免：先理解流程，不预测结果</h3><p>教务部指南说明推免的一般流程与系统；具体资格评价、时间和院系办法必须以当届通知为准。[2]</p><a href="https://dean.pku.edu.cn/web/student_info.php?id=21&type=7" target="_blank" rel="noreferrer">推免资格申请指南</a></span><span class="badge">规则入口</span></label></div><p class="note"><strong>不制造焦虑：</strong>大一阶段的目标是理解培养方案、保持正常学习节奏、知道官方信息从哪里来，而不是提前押注唯一升学路径。</p></div></article>
-    </section>
-    <section class="evidence"><details><summary>展开官方依据与日历说明</summary><div class="sources"><div><h3>官方依据</h3><ul><li>[1] 北京大学教务部，《2026—2027 学年第一学期本科生选课通知》，2026-07-08。</li><li>[2] 北京大学教务部，《推免资格申请指南》，具体时间以当年工作通知为准。</li><li>北京大学教务部信息下载页：2026 级学生手册、选课手册与培养方案入口。</li></ul></div><div><h3>导出边界</h3><ul><li>样例日历只导出官方页面明确给出的日期。</li><li>“9 月关注奖学金通知”这类观察窗口不会伪造成截止日。</li><li>院系规则未提供时，页面只给核验动作，不生成结论。</li></ul></div></div></details></section>
-    <footer>信息核验：本回答按 2026—2027 学年检索，示例更新于 2026-08-28。制度、资格与日期以北京大学及所属院系当年最新正式通知为准；建议行动前再次打开所附官方入口核验。</footer>
-  </main>
-  <div class="toast" id="toast" role="status" aria-live="polite">已生成日历文件</div>
-  <noscript><p style="padding:16px;background:#fff8dc">JavaScript 已关闭。全部时间线和依据仍可阅读，但筛选与日历导出不可用。</p></noscript>
+  <div class="shell">
+    <div class="topline"><span>燕园路径签 / 规划</span><span class="demo">演示数据 · 日期需当年核验</span></div>
+    <main class="board">
+      <section class="hero" aria-labelledby="decision">
+        <p class="eyebrow">四年雷达 · 只把现在推到眼前</p>
+        <h1 id="decision" data-role="primary-decision">现在先保存本专业培养方案。</h1>
+        <p>别先做四年清单；先知道课程要求在哪里更新。</p>
+        <a class="primary hero-primary" data-role="primary-action" href="https://dean.pku.edu.cn/web/download.php" target="_blank" rel="noreferrer">打开培养方案入口</a>
+      </section>
+
+      <nav class="controls" aria-label="时间轴阶段">
+        <button data-filter="now" aria-pressed="true">只看现在</button>
+        <button data-filter="next" aria-pressed="false">下一窗口</button>
+        <button data-filter="year" aria-pressed="false">本学年</button>
+        <button data-filter="later" aria-pressed="false">以后关注</button>
+        <button data-filter="all" aria-pressed="false">完整时间轴</button>
+      </nav>
+
+      <section class="timeline" aria-label="四年行动时间轴">
+        <div class="stages focused">
+          <article class="stage now" data-stage="now">
+            <time>NOW · 今天</time><h2>建立唯一入口</h2><p>不要收集十份经验帖，先保存两份会持续更新的官方材料。</p>
+            <div class="task"><strong>保存培养方案</strong><span>完成标准：能指出毕业要求与课程模块所在页。</span></div>
+            <div class="task"><strong>收藏教务通知</strong><span>完成标准：知道选课调整从哪里看。</span></div>
+            <div class="actions"><a class="primary" href="https://dean.pku.edu.cn/web/download.php" target="_blank" rel="noreferrer">打开信息下载</a></div>
+          </article>
+          <article class="stage next" data-stage="next" hidden>
+            <time>NEXT · 选课窗口</time><h2>核对课程结构</h2><p>选课前再看一次版本与适用年级，避免按旧方案排课。</p>
+            <div class="task"><strong>对照已选课程</strong><span>完成标准：每门课能归入培养方案模块。</span></div>
+            <div class="actions"><button class="secondary" id="calendar">加入已核实日期</button></div>
+          </article>
+          <article class="stage" data-stage="year" hidden>
+            <time>YEAR · 本学年</time><h2>留下一次复盘</h2><p>学年末核对学分结构、院系通知和下一年计划。</p>
+            <div class="task"><strong>记录规则变化</strong><span>只记会改变选课或申请动作的变化。</span></div>
+          </article>
+          <article class="stage" data-stage="later" hidden>
+            <time>LATER · 以后</time><h2>等待触发，不提前焦虑</h2><p>交流、辅修、科研和推免在窗口到来前只保留关注入口。</p>
+            <div class="task"><strong>到窗口再核验</strong><span>没有精确日期的事项不生成日历。</span></div>
+          </article>
+        </div>
+      </section>
+
+      <p class="change"><strong>会改变首选：</strong>若院系已经发布适用于你年级的更新版培养方案，直接保存新版并替换旧文件。</p>
+
+      <section class="evidence">
+        <details>
+          <summary>展开未来节点与依据</summary>
+          <div class="source"><p>● 已核实 [1] 教务部信息下载提供培养方案与学生手册入口；具体版本和日期需运行时核验。</p><p><a href="https://dean.pku.edu.cn/web/download.php" target="_blank" rel="noreferrer">打开教务部信息下载</a></p></div>
+        </details>
+        <noscript><p>当前行动：保存本专业培养方案和教务通知入口。下一窗口：选课前核对版本与适用年级。</p></noscript>
+      </section>
+    </main>
+  </div>
   <script>
-    const filters=[...document.querySelectorAll('.filter')],phases=[...document.querySelectorAll('.phase')],toast=document.getElementById('toast');
-    filters.forEach(button=>button.addEventListener('click',()=>{filters.forEach(item=>item.setAttribute('aria-pressed','false'));button.setAttribute('aria-pressed','true');const mode=button.dataset.filter;phases.forEach(phase=>phase.hidden=!(mode==='all'||phase.dataset.phase===mode))}));
-    document.getElementById('export').addEventListener('click',()=>{const ics=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//PKU Freshman Navigator Demo//CN','CALSCALE:GREGORIAN','BEGIN:VEVENT','UID:pku-course-selection-close-20260917@example.invalid','DTSTAMP:20260828T120000Z','DTSTART;TZID=Asia/Shanghai:20260917T093000','DTEND;TZID=Asia/Shanghai:20260917T100000','SUMMARY:核对北大秋季学期选课结果','DESCRIPTION:选课系统计划于 2026-09-17 10:00 关闭。行动前再次核对北京大学教务部当期通知。','URL:https://dean.pku.edu.cn/web/notice_details.php?id=751','END:VEVENT','END:VCALENDAR'].join('\r\n');const blob=new Blob([ics],{type:'text/calendar;charset=utf-8'});const link=document.createElement('a');link.href=URL.createObjectURL(blob);link.download='pku-2026-fall-verified-deadline.ics';document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(link.href),1000);toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),1800)});
+    const controls=[...document.querySelectorAll('[data-filter]')],stages=[...document.querySelectorAll('[data-stage]')],stageGrid=document.querySelector('.stages');
+    function show(value){
+      controls.forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.filter===value)));
+      stages.forEach(stage=>stage.hidden=value!=='all'&&stage.dataset.stage!==value);
+      stageGrid.classList.toggle('focused',value!=='all');
+    }
+    controls.forEach(button=>button.addEventListener('click',()=>show(button.dataset.filter)));
+    const calendar=document.querySelector('#calendar');
+    const ics='BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//PKU Freshman Navigator//V2//ZH\r\nBEGIN:VEVENT\r\nUID:demo-course-check@pku-navigator\r\nDTSTART;TZID=Asia/Shanghai:20260911T170000\r\nSUMMARY:核对选课结果（演示日期）\r\nDESCRIPTION:仅导出已由当年官方通知核实的日期。\r\nURL:https://dean.pku.edu.cn/\r\nEND:VEVENT\r\nEND:VCALENDAR';
+    calendar.addEventListener('click',()=>{const blob=new Blob([ics],{type:'text/calendar;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='pku-verified-action.ics';a.click();URL.revokeObjectURL(url)});
   </script>
 </body>
 </html>

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate the QwenWork skill package using only the Python standard library."""
+"""Validate the V2 skill package using only the Python standard library."""
 
 from __future__ import annotations
 
@@ -43,6 +43,7 @@ def main() -> int:
         "references/maintenance.md",
         "assets/examples/study-place-decision.html",
         "assets/examples/resource-unlock.html",
+        "assets/examples/rule-decision-flow.html",
         "assets/examples/four-year-radar.html",
         "tests/cases.json",
         "tests/TEST_PLAN.md",
@@ -52,14 +53,14 @@ def main() -> int:
             fail(f"missing required package file: {relative}", errors)
 
     cases_path = ROOT / "tests/cases.json"
+    cases: list[dict[str, object]] = []
     if cases_path.exists():
         try:
             cases = json.loads(cases_path.read_text(encoding="utf-8"))
         except json.JSONDecodeError as exc:
             fail(f"invalid tests/cases.json: {exc}", errors)
-            cases = []
-        if len(cases) < 12:
-            fail("expected at least 12 fixed behavior cases", errors)
+        if len(cases) != 12:
+            fail("expected exactly 12 fixed behavior cases", errors)
         ids = [case.get("id") for case in cases]
         if len(ids) != len(set(ids)):
             fail("duplicate test case ids", errors)
@@ -69,32 +70,55 @@ def main() -> int:
             if missing:
                 fail(f"case {index} missing fields: {sorted(missing)}", errors)
 
-    for html_path in sorted((ROOT / "assets/examples").glob("*.html")):
+    expected_types = {
+        "study-place-decision.html": "place",
+        "resource-unlock.html": "resource",
+        "rule-decision-flow.html": "rule",
+        "four-year-radar.html": "planning",
+    }
+    html_paths = sorted((ROOT / "assets/examples").glob("*.html"))
+    if len(html_paths) != 4:
+        fail(f"expected exactly 4 HTML examples, found {len(html_paths)}", errors)
+
+    for html_path in html_paths:
         html = html_path.read_text(encoding="utf-8")
         checks = {
             "lang=zh-CN": 'lang="zh-CN"' in html,
             "viewport": 'name="viewport"' in html,
-            "non-official label": "非北京大学官方产品" in html,
+            "semantic main": "<main" in html and "</main>" in html,
+            "demo boundary": "演示数据" in html,
+            "primary decision": 'data-role="primary-decision"' in html,
+            "primary action": 'data-role="primary-action"' in html,
             "noscript fallback": "<noscript>" in html,
             "reduced motion": "prefers-reduced-motion" in html,
-            "evidence drawer": "<details>" in html and "<summary>" in html,
+            "evidence drawer": "<details" in html and "<summary" in html,
+            "status text": any(label in html for label in ("已核实", "经验判断", "待核实")),
         }
         for label, ok in checks.items():
             if not ok:
                 fail(f"{html_path.name}: missing {label}", errors)
+
+        expected_type = expected_types.get(html_path.name)
+        if expected_type and f'data-example-type="{expected_type}"' not in html:
+            fail(f"{html_path.name}: missing example type {expected_type}", errors)
+
         forbidden = {
             "external script": r"<script[^>]+src=",
             "external stylesheet": r"<link[^>]+stylesheet",
             "CSS import": r"@import\s",
             "tracking storage": r"localStorage|sessionStorage|document\.cookie",
+            "V1 global disclaimer": r"信息核验：本回答按|非北京大学官方产品",
         }
         for label, pattern in forbidden.items():
             if re.search(pattern, html, re.I):
                 fail(f"{html_path.name}: contains {label}", errors)
-        if html_path.name == "four-year-radar.html":
-            for token in ("BEGIN:VCALENDAR", "END:VCALENDAR", "DTSTART;TZID=Asia/Shanghai", "URL:https://dean.pku.edu.cn/"):
-                if token not in html:
-                    fail(f"{html_path.name}: incomplete calendar export ({token})", errors)
+
+    radar = ROOT / "assets/examples/four-year-radar.html"
+    if radar.exists():
+        radar_text = radar.read_text(encoding="utf-8")
+        for token in ("BEGIN:VCALENDAR", "END:VCALENDAR", "DTSTART;TZID=Asia/Shanghai", "URL:https://dean.pku.edu.cn/"):
+            if token not in radar_text:
+                fail(f"four-year-radar.html: incomplete calendar export ({token})", errors)
 
     unfinished_markers = ("TO" + "DO", "T" + "BD", "PLACE" + "HOLDER", "lorem" + " ipsum")
     for path in ROOT.rglob("*"):
@@ -111,8 +135,8 @@ def main() -> int:
 
     print("PACKAGE VALIDATION PASSED")
     print(f"- root: {ROOT}")
-    print(f"- fixed behavior cases: {len(json.loads(cases_path.read_text(encoding='utf-8')))}")
-    print(f"- HTML examples: {len(list((ROOT / 'assets/examples').glob('*.html')))}")
+    print(f"- fixed behavior cases: {len(cases)}")
+    print(f"- HTML examples: {len(html_paths)}")
     return 0
 
 

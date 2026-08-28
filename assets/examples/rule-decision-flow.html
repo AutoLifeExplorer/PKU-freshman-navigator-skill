@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="zh-CN" data-example-type="rule">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>制度条件流程｜燕园路径签</title>
+  <style>
+    :root{--mist:#dce6e3;--paper:#f7f8f5;--ink:#17231f;--red:#7c2435;--gold:#d9a928;--blue:#2d6274;--line:#b6c8c2;--muted:#5b6964;--shadow:0 18px 45px rgba(23,35,31,.10)}
+    *{box-sizing:border-box}body{margin:0;background:var(--mist);color:var(--ink);font-family:"PingFang SC","Microsoft YaHei",sans-serif;line-height:1.55}button,a{font:inherit}button:focus-visible,a:focus-visible,summary:focus-visible{outline:3px solid var(--gold);outline-offset:3px}.shell{width:min(1080px,calc(100% - 32px));margin:24px auto 48px}.topline{display:flex;justify-content:space-between;gap:16px;align-items:center;margin-bottom:14px;color:var(--muted);font:12px/1.4 ui-monospace,monospace}.demo{padding:6px 10px;border:1px solid var(--line);border-radius:99px;background:rgba(247,248,245,.72)}.board{background:var(--paper);border-radius:26px;box-shadow:var(--shadow);overflow:hidden}.hero{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:24px;align-items:end;padding:34px 38px 30px;border-bottom:1px solid var(--line)}.eyebrow{margin:0 0 8px;color:var(--red);font:700 12px/1.3 ui-monospace,monospace;letter-spacing:.12em}.hero h1{margin:0;max-width:760px;font:700 clamp(30px,5vw,58px)/1.06 STSong,"Songti SC",serif;letter-spacing:-.04em}.hero p{margin:14px 0 0;color:var(--muted)}.flow{padding:34px 38px}.rail{display:grid;grid-template-columns:1fr 48px 1fr 48px 1fr;align-items:stretch}.node{min-height:190px;padding:22px;border:1px solid var(--line);border-radius:18px;background:#fff}.node.current{border:2px solid var(--red);box-shadow:0 0 0 7px #f0dfe2}.node .tag{display:inline-block;margin-bottom:20px;color:var(--blue);font:700 11px/1.2 ui-monospace,monospace;letter-spacing:.08em}.node h2{margin:0 0 8px;font:700 23px/1.2 STSong,"Songti SC",serif}.node p{margin:0;color:var(--muted);font-size:14px}.arrow{display:grid;place-items:center;color:var(--red);font-size:28px}.choice{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:20px}.choice button{min-height:48px;border:1px solid var(--blue);border-radius:10px;background:transparent;color:var(--blue);cursor:pointer;font-weight:700}.choice button[aria-pressed="true"]{background:var(--blue);color:#fff}.outcome{margin-top:26px;display:grid;grid-template-columns:1fr auto;gap:20px;align-items:center;padding:20px 22px;background:#e9efec;border-left:5px solid var(--red)}.outcome h2{margin:0 0 5px;font-size:20px}.outcome p{margin:0;color:var(--muted)}.primary{display:inline-flex;min-height:48px;align-items:center;justify-content:center;padding:0 18px;border-radius:12px;background:var(--red);color:#fff;text-decoration:none;font-weight:700}.change{margin:20px 0 0;padding:14px 17px;border:1px solid #d9c067;background:#f8f2d8}.evidence{padding:0 38px 34px}.evidence details{border-top:1px solid var(--line);padding-top:18px}.evidence summary{min-height:44px;display:flex;align-items:center;cursor:pointer;font-weight:700}.source{font-size:13px;color:var(--muted)}.source a{color:var(--blue)}
+    @media(max-width:820px){.rail{grid-template-columns:1fr}.arrow{height:46px;transform:rotate(90deg)}.node{min-height:0}.outcome{grid-template-columns:1fr}.primary{width:100%}}
+    @media(max-width:600px){.shell{width:min(100% - 20px,1080px);margin-top:10px}.board{border-radius:18px}.hero{grid-template-columns:1fr;padding:24px 22px}.hero .primary{width:100%}.flow{padding:24px 22px}.hero h1{font-size:38px}.evidence{padding:0 22px 24px}.topline{align-items:flex-start}}
+    @media(max-width:380px){.shell{width:calc(100% - 12px)}.hero h1{font-size:34px}.choice{grid-template-columns:1fr}.topline{font-size:11px}}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}}
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <div class="topline"><span>燕园路径签 / 制度</span><span class="demo">演示数据 · 以适用院系文件为准</span></div>
+    <main class="board">
+      <section class="hero" aria-labelledby="decision">
+        <div><p class="eyebrow">官方结论 → 是否适用 → 当前动作</p><h1 id="decision" data-role="primary-decision">先查本院系细则，再判断条件。</h1><p>“学校有总规则”不等于“各院执行完全相同”。</p></div>
+        <a class="primary" data-role="primary-action" href="https://xxgk.pku.edu.cn/gksx/xsgl/xjgl/index.htm" target="_blank" rel="noreferrer">打开核验入口</a>
+      </section>
+
+      <section class="flow" aria-label="奖学金规则条件流程">
+        <div class="rail">
+          <article class="node">
+            <span class="tag">01 · 中央规则</span>
+            <h2>成绩不是唯一信息</h2>
+            <p>奖励办法会规定基本范围；具体评价维度需继续看适用文件。</p>
+            <p class="tag" style="margin:18px 0 0">● 已核实 [1]</p>
+          </article>
+          <div class="arrow" aria-hidden="true">→</div>
+          <article class="node current">
+            <span class="tag">02 · 关键分支</span>
+            <h2>院系细则找到了吗？</h2>
+            <div class="choice" role="group" aria-label="院系细则状态">
+              <button data-state="yes" aria-pressed="false">找到了</button>
+              <button data-state="no" aria-pressed="true">还没有</button>
+            </div>
+          </article>
+          <div class="arrow" aria-hidden="true">→</div>
+          <article class="node">
+            <span class="tag">03 · 你的动作</span>
+            <h2 id="action-title">收藏院系通知入口</h2>
+            <p id="action-copy">现在不要猜权重；记录发布窗口，到时核对适用年级。</p>
+            <p class="tag" id="action-state" style="margin:18px 0 0">○ 待核实</p>
+          </article>
+        </div>
+
+        <div class="outcome">
+          <div><h2 id="outcome-title">当前不能回答“只看成绩吗”</h2><p id="outcome-copy">缺少本院当年细则。能确定的是：不要只保存总办法。</p></div>
+          <a class="primary" href="https://xxgk.pku.edu.cn/gksx/xsgl/xjgl/index.htm" target="_blank" rel="noreferrer" id="action-link">打开官方入口</a>
+        </div>
+        <p class="change"><strong>会改变结论：</strong><span id="change">本院当年细则发布后，应以其适用范围和正式条款重新判断。</span></p>
+      </section>
+
+      <section class="evidence">
+        <details>
+          <summary>展开依据与判断顺序</summary>
+          <div class="source">
+            <p>[1] 北京大学信息公开网 · 学生管理与奖励制度入口。比较冲突文件时依次看：适用对象 → 适用时间 → 文件性质。</p>
+            <p><a href="https://xxgk.pku.edu.cn/gksx/xsgl/xjgl/index.htm" target="_blank" rel="noreferrer">打开学生管理信息公开入口</a></p>
+          </div>
+        </details>
+        <noscript><p>当前结论：先查本院系当年细则。现在做：收藏院系通知入口；细则发布后核对适用年级和评价维度。</p></noscript>
+      </section>
+    </main>
+  </div>
+  <script>
+    const buttons=[...document.querySelectorAll('[data-state]')];
+    const title=document.querySelector('#action-title'),copy=document.querySelector('#action-copy');
+    const state=document.querySelector('#action-state'),outcomeTitle=document.querySelector('#outcome-title');
+    const outcomeCopy=document.querySelector('#outcome-copy'),change=document.querySelector('#change'),link=document.querySelector('#action-link');
+    function setState(value){
+      buttons.forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.state===value)));
+      if(value==='yes'){
+        title.textContent='核对适用年级与评价维度';copy.textContent='找到你的年级、专业和本次评定对应的正式条款。';state.textContent='● 已核实后执行';
+        outcomeTitle.textContent='用本院细则回答，不套用外院经验';outcomeCopy.textContent='先看适用范围，再提取成绩之外的明确评价项。';change.textContent='若文件是往年版本或不适用于你的年级，结论仍需回到“待核实”。';link.textContent='打开院系文件';
+      }else{
+        title.textContent='收藏院系通知入口';copy.textContent='现在不要猜权重；记录发布窗口，到时核对适用年级。';state.textContent='○ 待核实';
+        outcomeTitle.textContent='当前不能回答“只看成绩吗”';outcomeCopy.textContent='缺少本院当年细则。能确定的是：不要只保存总办法。';change.textContent='本院当年细则发布后，应以其适用范围和正式条款重新判断。';link.textContent='打开官方入口';
+      }
+    }
+    buttons.forEach(button=>button.addEventListener('click',()=>setState(button.dataset.state)));setState('no');
+  </script>
+</body>
+</html>

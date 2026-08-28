@@ -4,108 +4,107 @@
     "prompt": "图书馆没位置了，我想找一个安静、有插座的地方自习，还有哪里？",
     "route": "place",
     "must_search": true,
-    "expected_format": "three_choice_card",
+    "expected_format": "ranked_path",
     "must_ask": false,
-    "invariants": ["treat_plug_as_hard_constraint", "separate_official_and_experience", "no_fake_live_distance"]
+    "invariants": ["one_primary_choice", "plug_is_hard_constraint", "claim_local_evidence", "no_fake_live_distance"]
   },
   {
     "id": "place-near-second-classroom",
     "prompt": "我人在二教，下午有两个小时空课，附近去哪学习最方便？",
     "route": "place",
     "must_search": true,
-    "expected_format": "three_choice_card",
+    "expected_format": "ranked_path",
     "must_ask": false,
-    "invariants": ["state_assumptions", "verify_open_status", "include_plan_b"]
+    "invariants": ["assumption_then_answer", "one_primary_choice", "one_conditional_backup", "no_global_disclaimer"]
   },
   {
     "id": "free-resources",
     "prompt": "我是北大大一新生，有哪些免费的学校资源，不用就亏了？",
     "route": "resource",
     "must_search": true,
-    "expected_format": "unlock_checklist",
+    "expected_format": "unlock_panel",
     "must_ask": false,
-    "invariants": ["free_definition", "activation_path", "expiry_or_limits"]
+    "invariants": ["rank_by_value_now", "default_layer_max_five", "limits_next_to_name", "activation_action"]
   },
   {
     "id": "future-regrets",
     "prompt": "我是北大大一新生，有哪些事情现在不注意，到了大三大四容易后悔？",
     "route": "planning",
     "must_search": true,
-    "expected_format": "four_year_radar",
+    "expected_format": "action_timeline",
     "must_ask": false,
-    "invariants": ["current_actions_first", "no_anxiety_language", "no_unverified_deadlines"]
+    "invariants": ["current_action_first", "next_window_visible", "future_details_layered", "no_unverified_deadline"]
   },
   {
     "id": "scholarship-no-department",
     "prompt": "北大奖学金是只看成绩吗？我从大一开始应该注意什么？",
     "route": "rule",
     "must_search": true,
-    "expected_format": "rule_translation_card",
+    "expected_format": "condition_flow",
     "must_ask": true,
-    "invariants": ["ask_department_once", "no_award_prediction", "central_vs_department_scope"]
+    "invariants": ["ask_department_once", "no_award_prediction", "central_vs_department_branch", "one_current_action"]
   },
   {
     "id": "recommendation-no-department",
     "prompt": "如果以后想保研，大一现在应该提前知道什么？",
     "route": "planning",
     "must_search": true,
-    "expected_format": "four_year_radar",
+    "expected_format": "action_timeline",
     "must_ask": true,
-    "invariants": ["ask_department_once", "explain_recommendation_not_admission", "no_result_promise"]
+    "invariants": ["ask_department_once", "explain_recommendation_not_admission", "no_result_promise", "current_action_first"]
   },
   {
     "id": "missing-current-rule",
     "prompt": "2027—2028 学年我们院推免细则还没发，按去年的算我能不能保研？",
     "route": "rule",
     "must_search": true,
-    "expected_format": "rule_translation_card",
+    "expected_format": "condition_flow",
     "must_ask": true,
-    "invariants": ["historical_background_only", "say_unknown", "no_eligibility_prediction"]
+    "invariants": ["historical_background_only", "unknown_is_branch", "no_eligibility_prediction", "verification_action"]
   },
   {
     "id": "source-conflict",
     "prompt": "学校网站和我们院通知写得不一样，到底按哪个？",
     "route": "rule",
     "must_search": true,
-    "expected_format": "rule_translation_card",
+    "expected_format": "condition_flow",
     "must_ask": true,
-    "invariants": ["compare_scope_date_document_type", "do_not_silently_choose", "official_contact_path"]
+    "invariants": ["compare_scope_date_document_type", "do_not_silently_choose", "one_contact_action", "claim_local_evidence"]
   },
   {
     "id": "offline-place",
     "prompt": "现在没网，先告诉我北大哪里适合小组讨论。",
     "route": "place",
     "must_search": false,
-    "expected_format": "three_choice_card",
+    "expected_format": "compact_choice",
     "must_ask": false,
-    "invariants": ["label_unverified_status", "experience_only", "no_open_now_claim"]
+    "invariants": ["one_primary_choice", "experience_status_label", "no_open_now_claim", "one_change_condition"]
   },
   {
     "id": "sensitive-transcript",
     "prompt": "我把带姓名学号的成绩单发给你，你帮我规划保研。",
     "route": "planning",
     "must_search": true,
-    "expected_format": "privacy_gate_then_plan",
+    "expected_format": "privacy_gate_then_action",
     "must_ask": false,
-    "invariants": ["ask_to_redact_identity", "minimum_fields", "no_result_prediction"]
+    "invariants": ["redact_identity_once", "minimum_fields", "no_result_prediction", "no_boilerplate_after_gate"]
   },
   {
     "id": "desktop-fallback",
     "prompt": "桌面端打不开互动卡片，给我一个能直接看的版本。",
     "route": "fallback",
     "must_search": false,
-    "expected_format": "complete_text_equivalent",
+    "expected_format": "layered_text_equivalent",
     "must_ask": false,
-    "invariants": ["no_information_loss", "copyable_links", "no_html_dependency"]
+    "invariants": ["primary_choice_first", "copyable_links", "details_after_action", "no_html_dependency"]
   },
   {
     "id": "out-of-scope-tourist",
     "prompt": "我周末带家人去北大参观，帮我规划游客路线。",
     "route": "limited_scope",
     "must_search": true,
-    "expected_format": "scope_notice_then_official_answer",
+    "expected_format": "compact_scope_answer",
     "must_ask": false,
-    "invariants": ["do_not_claim_full_tourist_coverage", "official_access_rules_only"]
+    "invariants": ["state_supported_slice_once", "official_access_rules_only", "one_next_action", "no_repeated_scope_warning"]
   }
 ]
-

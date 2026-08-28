@@ -1,93 +1,113 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-example-type="place">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="color-scheme" content="light">
-  <title>自习地点三选一｜北大新生生存导航</title>
+  <title>自习地点排序路径｜燕园路径签</title>
   <style>
-    :root{--stone:#dce6e3;--paper:#f7f8f5;--ink:#17231f;--red:#7c2435;--yellow:#d9a928;--lake:#2d6274;--line:#9aaca6;--muted:#5d6b66;--shadow:0 18px 50px rgba(23,35,31,.11)}
-    *{box-sizing:border-box}
-    html{background:var(--stone);color:var(--ink);font-family:"PingFang SC","Microsoft YaHei",sans-serif;line-height:1.55}
-    body{margin:0;min-height:100vh;background:linear-gradient(90deg,rgba(45,98,116,.06) 1px,transparent 1px);background-size:32px 32px}
-    a{color:var(--lake);text-underline-offset:3px}
-    button{font:inherit}
-    button:focus-visible,a:focus-visible,summary:focus-visible{outline:3px solid var(--yellow);outline-offset:3px}
-    .shell{width:min(1120px,calc(100% - 32px));margin:24px auto 56px;background:var(--paper);border:1px solid rgba(23,35,31,.18);box-shadow:var(--shadow)}
-    .utility{display:flex;gap:12px;flex-wrap:wrap;align-items:center;padding:12px 18px;background:var(--ink);color:white;font:600 12px/1.4 "SFMono-Regular",Consolas,monospace;letter-spacing:.04em}
-    .utility .nonofficial{margin-left:auto;color:#ffe4a1}
-    header{display:grid;grid-template-columns:minmax(0,1fr) 230px;gap:28px;padding:42px clamp(22px,5vw,64px) 36px;border-bottom:1px solid rgba(23,35,31,.18)}
-    .eyebrow{margin:0 0 10px;color:var(--red);font:700 13px/1.4 "SFMono-Regular",Consolas,monospace;letter-spacing:.08em;text-transform:uppercase}
-    h1{max-width:760px;margin:0;font:700 clamp(34px,5.2vw,62px)/1.04 "STSong","Songti SC",serif;letter-spacing:-.035em}
-    .lead{max-width:720px;margin:20px 0 0;font-size:18px;color:#34443e}
-    .query{align-self:end;padding:18px;border-left:5px solid var(--yellow);background:white}
-    .query b{display:block;margin-bottom:6px;font-size:13px;color:var(--muted)}
-    .controls{display:flex;gap:10px;flex-wrap:wrap;padding:20px clamp(22px,5vw,64px);border-bottom:1px solid rgba(23,35,31,.18)}
-    .filter{min-height:44px;padding:8px 15px;border:1px solid var(--ink);border-radius:999px;background:transparent;color:var(--ink);cursor:pointer}
-    .filter[aria-pressed="true"]{background:var(--ink);color:white}
-    .route{position:relative;padding:32px clamp(22px,5vw,64px) 46px}
-    .route::before{content:"";position:absolute;top:52px;bottom:72px;left:calc(clamp(22px,5vw,64px) + 17px);width:3px;background:var(--line)}
-    .card{position:relative;display:grid;grid-template-columns:54px minmax(0,1fr);gap:18px;margin-bottom:22px;transition:opacity .18s ease,transform .18s ease}
-    .card[hidden]{display:none}
-    .node{position:relative;z-index:1;width:38px;height:38px;display:grid;place-items:center;border:3px solid var(--ink);border-radius:50%;background:var(--paper);font:700 13px "SFMono-Regular",Consolas,monospace}
-    .card:first-child .node{background:var(--red);border-color:var(--red);color:white}
-    .panel{background:white;border:1px solid rgba(23,35,31,.24);padding:24px}
-    .panel-top{display:flex;align-items:flex-start;justify-content:space-between;gap:18px}
-    .role{margin:0 0 5px;color:var(--red);font:700 12px "SFMono-Regular",Consolas,monospace;letter-spacing:.08em}
-    h2{margin:0;font:700 clamp(24px,3vw,34px)/1.15 "STSong","Songti SC",serif}
-    .confidence{white-space:nowrap;padding:5px 9px;background:var(--stone);color:var(--lake);font-size:12px;font-weight:700}
-    .reason{margin:12px 0 16px;font-size:17px}
-    .facts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:rgba(23,35,31,.18);border:1px solid rgba(23,35,31,.18)}
-    .fact{min-height:88px;padding:12px;background:var(--paper)}
-    .fact span{display:block;margin-bottom:4px;color:var(--muted);font-size:12px}
-    .fact strong{font-size:14px}
-    .warning{margin:16px 0 0;padding:12px 14px;border-left:4px solid var(--yellow);background:#fff8dc}
-    .actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
-    .action{min-height:44px;padding:10px 14px;border:1px solid var(--ink);background:var(--ink);color:white;cursor:pointer;text-decoration:none}
-    .action.secondary{background:white;color:var(--ink)}
-    .empty{display:none;margin:20px 0;padding:24px;border:1px dashed var(--red);color:var(--red)}
-    .evidence{padding:0 clamp(22px,5vw,64px) 42px}
-    details{border-top:1px solid rgba(23,35,31,.25)}
-    summary{min-height:52px;display:flex;align-items:center;cursor:pointer;font-weight:700}
-    .sources{display:grid;grid-template-columns:1fr 1fr;gap:22px;padding:0 0 22px}
-    .sources h3{margin:0 0 8px;font-size:14px}
-    .sources ol{margin:0;padding-left:22px;color:#34443e}
-    footer{padding:20px clamp(22px,5vw,64px);background:#edf1ee;color:#4b5a55;font-size:13px}
-    .toast{position:fixed;right:18px;bottom:18px;padding:12px 16px;background:var(--ink);color:white;box-shadow:var(--shadow);opacity:0;transform:translateY(10px);pointer-events:none;transition:.2s ease}
-    .toast.show{opacity:1;transform:none}
-    @media(max-width:760px){.shell{width:min(100% - 16px,1120px);margin:8px auto 24px}.utility .nonofficial{margin-left:0}header{grid-template-columns:1fr;padding-top:30px}.query{align-self:auto}.facts{grid-template-columns:1fr 1fr}.panel-top{display:block}.confidence{display:inline-block;margin-top:10px}.sources{grid-template-columns:1fr}.route::before{left:calc(clamp(22px,5vw,64px) + 14px)}.card{grid-template-columns:46px minmax(0,1fr)}.node{width:32px;height:32px}.panel{padding:18px}}
-    @media(max-width:430px){.facts{grid-template-columns:1fr}.action{width:100%;text-align:center}}
-    @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important}}
+    :root{--mist:#dce6e3;--paper:#f7f8f5;--ink:#17231f;--red:#7c2435;--gold:#d9a928;--blue:#2d6274;--line:#b6c8c2;--muted:#5b6964;--shadow:0 18px 45px rgba(23,35,31,.10)}
+    *{box-sizing:border-box}html{color-scheme:light}body{margin:0;background:var(--mist);color:var(--ink);font-family:"PingFang SC","Microsoft YaHei",sans-serif;line-height:1.55}button,a{font:inherit}button:focus-visible,a:focus-visible,summary:focus-visible{outline:3px solid var(--gold);outline-offset:3px}.shell{width:min(1120px,calc(100% - 32px));margin:24px auto 48px}.topline{display:flex;justify-content:space-between;gap:16px;align-items:center;margin-bottom:14px;color:var(--muted);font:12px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.04em}.demo{padding:6px 10px;border:1px solid var(--line);border-radius:99px;background:rgba(247,248,245,.7)}.board{background:var(--paper);border-radius:26px;box-shadow:var(--shadow);overflow:hidden}.hero{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:24px;padding:34px 38px 28px;border-bottom:1px solid var(--line)}.eyebrow{margin:0 0 8px;color:var(--red);font:700 12px/1.3 ui-monospace,SFMono-Regular,monospace;letter-spacing:.12em}.hero h1{margin:0;max-width:680px;font-family:STSong,"Songti SC",serif;font-size:clamp(30px,5vw,58px);line-height:1.06;font-weight:700;letter-spacing:-.04em}.hero p{margin:14px 0 0;color:var(--muted)}.primary{align-self:end;display:inline-flex;min-height:48px;align-items:center;justify-content:center;padding:0 18px;border:0;border-radius:12px;background:var(--red);color:#fff;text-decoration:none;font-weight:700;cursor:pointer}.workspace{display:grid;grid-template-columns:270px minmax(0,1fr)}.filters{padding:28px;border-right:1px solid var(--line);background:#edf2ef}.filters h2,.route h2{margin:0 0 14px;font-size:14px}.filter-grid{display:grid;gap:10px}.filter{min-height:46px;padding:0 14px;border:1px solid var(--line);border-radius:10px;background:transparent;color:var(--ink);text-align:left;cursor:pointer}.filter[aria-pressed="true"]{border-color:var(--blue);background:var(--blue);color:#fff}.assumption{margin:20px 0 0;padding-top:16px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}.route{padding:28px 34px 34px}.path{position:relative;margin-top:20px}.path::before{content:"";position:absolute;left:18px;top:18px;bottom:18px;width:2px;background:var(--line)}.stop{position:relative;display:grid;grid-template-columns:38px minmax(0,1fr) auto;gap:16px;align-items:start;padding:0 0 26px}.stop:last-child{padding-bottom:0}.node{position:relative;z-index:1;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:var(--paper);border:2px solid var(--line);font:700 13px/1 ui-monospace,monospace}.stop.primary-stop .node{background:var(--red);border-color:var(--red);color:#fff;box-shadow:0 0 0 6px #f0dfe2}.stop h3{margin:0 0 4px;font:700 21px/1.25 STSong,"Songti SC",serif}.stop p{margin:0;color:var(--muted);font-size:14px}.badges{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}.badge{padding:4px 8px;border-radius:99px;background:#e7efec;font-size:12px;color:var(--blue)}.state{white-space:nowrap;font:12px/1.4 ui-monospace,monospace;color:var(--blue)}.change{margin-top:24px;padding:15px 18px;border-left:4px solid var(--gold);background:#f6f0d9}.details{padding:0 34px 32px}.details details{border-top:1px solid var(--line);padding-top:18px}.details summary{min-height:44px;display:flex;align-items:center;cursor:pointer;font-weight:700}.sources{font-size:13px;color:var(--muted)}.sources a{color:var(--blue)}.toast{min-height:22px;margin:8px 0 0;color:var(--red);font-weight:700;font-size:13px}
+    @media(max-width:760px){.shell{width:min(100% - 20px,1120px);margin-top:10px}.topline{align-items:flex-start}.board{border-radius:18px}.hero{grid-template-columns:1fr;padding:25px 22px 22px}.hero h1{font-size:38px}.primary{width:100%}.workspace{grid-template-columns:1fr}.filters{border-right:0;border-bottom:1px solid var(--line);padding:20px 22px}.filter-grid{grid-template-columns:repeat(3,1fr)}.filter{text-align:center;padding:0 7px}.route{padding:22px}.stop{grid-template-columns:38px minmax(0,1fr)}.state{grid-column:2}.details{padding:0 22px 24px}}
+    @media(max-width:380px){.shell{width:calc(100% - 12px)}.hero h1{font-size:34px}.filter-grid{grid-template-columns:1fr}.stop{gap:12px}.topline{font-size:11px}}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
   </style>
 </head>
 <body>
-  <main class="shell">
-    <div class="utility"><span>2026—2027 学年</span><span>地点决策</span><span>示例核验：2026-08-28</span><span class="nonofficial">非北京大学官方产品</span></div>
-    <header>
-      <div><p class="eyebrow">燕园路径签 · 两小时空课</p><h1>先去能完成任务的地方，再追求“完美座位”。</h1><p class="lead">示例结论：如果你必须低声讨论，和声厅的空间属性最明确；如果必须插电，图书馆 201 BYOD 只可作为待复核候选，因为插座信息来自历史页面。</p></div>
-      <aside class="query"><b>示例问题</b>“我在二教，有两个小时，想插电，最好能低声讨论。”<br><small>距离尚未调用地图核验。</small></aside>
-    </header>
-    <nav class="controls" aria-label="筛选地点">
-      <button class="filter" type="button" data-filter="all" aria-pressed="true">全部候选</button>
-      <button class="filter" type="button" data-filter="plug" aria-pressed="false">只看有插座线索</button>
-      <button class="filter" type="button" data-filter="talk" aria-pressed="false">只看可讨论</button>
-      <button class="filter" type="button" data-filter="official" aria-pressed="false">只看官方现行信息</button>
-    </nav>
-    <section class="route" aria-live="polite">
-      <article class="card" data-tags="talk official"><div class="node">A</div><div class="panel"><div class="panel-top"><div><p class="role">最稳妥 · 讨论任务</p><h2>图书馆和声厅</h2></div><span class="confidence">官方现行入口</span></div><p class="reason">官方明确描述可朗读、演练 PPT 和小组讨论；更符合“需要发声”的硬条件。[1]</p><div class="facts"><div class="fact"><span>声音</span><strong>可讨论</strong></div><div class="fact"><span>插座</span><strong>当前未知</strong></div><div class="fact"><span>开放</span><strong>需当日复核</strong></div><div class="fact"><span>从二教</span><strong>待地图核验</strong></div></div><p class="warning"><strong>先做一步：</strong>打开空间页确认当天是否开放、是否需要预约。插座未核实，必须插电时带好备用电源或选择 Plan B。</p><div class="actions"><a class="action" href="https://lib.pku.edu.cn/portal/cn/hdjl/fwyy/hst" target="_blank" rel="noreferrer">核验和声厅</a><button class="action secondary copy" type="button" data-copy="北京大学图书馆 和声厅">复制地点名</button></div></div></article>
-      <article class="card" data-tags="talk"><div class="node">B</div><div class="panel"><div class="panel-top"><div><p class="role">最近候选 · 先现场确认</p><h2>二教“树下空间”</h2></div><span class="confidence">经验 · 中低可信度</span></div><p class="reason">公开学生整理曾提到二教三、四楼有自习点与讨论隔间，但这不是当前官方开放承诺。[E1]</p><div class="facts"><div class="fact"><span>声音</span><strong>有讨论区线索</strong></div><div class="fact"><span>插座</span><strong>未知</strong></div><div class="fact"><span>开放</span><strong>现场确认</strong></div><div class="fact"><span>从二教</span><strong>同楼候选</strong></div></div><p class="warning"><strong>使用条件：</strong>先看现场标识和课程占用。若插座是硬条件，未确认前不要把它当作唯一方案。</p><div class="actions"><button class="action secondary copy" type="button" data-copy="北京大学第二教学楼 树下空间">复制检索词</button></div></div></article>
-      <article class="card" data-tags="plug"><div class="node">C</div><div class="panel"><div class="panel-top"><div><p class="role">插电候选 · 历史信息待复核</p><h2>图书馆 201 BYOD</h2></div><span class="confidence">官方历史信息</span></div><p class="reason">图书馆历史页面曾说明该区座位配有电源插座；信息较旧，只能作为候选线索。[2]</p><div class="facts"><div class="fact"><span>声音</span><strong>偏安静</strong></div><div class="fact"><span>插座</span><strong>历史确认</strong></div><div class="fact"><span>开放</span><strong>当前待核验</strong></div><div class="fact"><span>从二教</span><strong>待地图核验</strong></div></div><p class="warning"><strong>风险：</strong>名称、布局和插座数量可能已经变化。先查图书馆当前空间布局；无法确认时，不进入实时推荐前三。</p><div class="actions"><a class="action" href="https://www.lib.pku.edu.cn/3wxbz/index.htm" target="_blank" rel="noreferrer">看当前空间布局</a><button class="action secondary copy" type="button" data-copy="北京大学图书馆 201 BYOD 学习区">复制地点名</button></div></div></article>
-      <p class="empty" id="empty">没有同时满足此筛选条件且证据足够的地点。请减少一个条件，或先核验插座和开放状态。</p>
-    </section>
-    <section class="evidence"><details><summary>展开依据与更新时间</summary><div class="sources"><div><h3>官方依据</h3><ol><li><a href="https://lib.pku.edu.cn/portal/cn/hdjl/fwyy/hst">北京大学图书馆｜和声厅服务</a>，现行服务介绍，检索于 2026-08-28。</li><li><a href="https://www.lib.pku.edu.cn/portal/cn/news/0000001269">北京大学图书馆｜201 BYOD 学习区</a>，历史页面，仅作背景。</li></ol></div><div><h3>经验依据</h3><ol><li><a href="https://www.sohu.com/a/711485131_121124324">公开学生资源整理｜二教树下空间</a>，2023 年发布，中低可信度，需现场复核。</li></ol></div></div></details></section>
-    <footer>信息核验：本页是结构与交互验收样例，不是实时地点推荐。制度与开放状态以北京大学最新正式页面为准；地点环境与设施包含经验或历史信息，行动前请再次打开所附入口核验。</footer>
-  </main>
-  <div class="toast" id="toast" role="status" aria-live="polite">已复制</div>
-  <noscript><p style="padding:16px;background:#fff8dc">JavaScript 已关闭。所有候选与依据仍可阅读，但筛选和复制按钮不可用。</p></noscript>
+  <div class="shell">
+    <div class="topline"><span>燕园路径签 / 地点</span><span class="demo">演示数据 · 不代表实时开放</span></div>
+    <main class="board">
+      <section class="hero" aria-labelledby="decision">
+        <div>
+          <p class="eyebrow">首选 · 从二教出发</p>
+          <h1 id="decision" data-role="primary-decision">先去理教一层公共区。</h1>
+          <p id="reason">两小时空课，步行成本低；安静与插座需到场确认。</p>
+        </div>
+        <button class="primary" id="copy" data-role="primary-action">复制地点名</button>
+      </section>
+
+      <section class="workspace" aria-label="条件与地点排序">
+        <aside class="filters">
+          <h2>改一个条件，首选会跟着变</h2>
+          <div class="filter-grid" role="group" aria-label="学习条件">
+            <button class="filter" data-filter="quiet" aria-pressed="true">需要安静</button>
+            <button class="filter" data-filter="plug" aria-pressed="true">必须插电</button>
+            <button class="filter" data-filter="talk" aria-pressed="false">需要讨论</button>
+          </div>
+          <p class="assumption">当前假设：从二教出发，学习 2 小时，不消费。点击即可修正。</p>
+        </aside>
+
+        <div class="route">
+          <h2>硬条件过滤后的路径</h2>
+          <div class="path" id="path">
+            <article class="stop primary-stop" data-place="理教一层公共区">
+              <span class="node">首</span>
+              <div><h3>理教一层公共区</h3><p>当前条件下最省折返；先现场确认插座与座位。</p><div class="badges"><span class="badge">近二教</span><span class="badge">安静优先</span></div></div>
+              <span class="state">○ 待核实</span>
+            </article>
+            <article class="stop" data-place="图书馆和声厅">
+              <span class="node">备</span>
+              <div><h3>图书馆和声厅</h3><p>只有切换为“需要讨论”时才升级为首选。</p></div>
+              <span class="state">● 已核实 [1]</span>
+            </article>
+            <article class="stop" data-place="新太阳学习区">
+              <span class="node">候</span>
+              <div><h3>新太阳学习区</h3><p>历史资料过旧，保留为现场检索候选。</p></div>
+              <span class="state">◐ 经验判断</span>
+            </article>
+            <article class="stop" data-place="二教公共学习点">
+              <span class="node">候</span>
+              <div><h3>二教公共学习点</h3><p>不要求插座时，用最短移动换取更多学习时间。</p></div>
+              <span class="state">○ 待核实</span>
+            </article>
+          </div>
+          <div class="change" id="change"><strong>会改变首选：</strong>若现场无可用插座，直接转去已确认供电的学习区。</div>
+          <p class="toast" id="toast" role="status" aria-live="polite"></p>
+        </div>
+      </section>
+
+      <section class="details">
+        <details>
+          <summary>展开依据与被淘汰项</summary>
+          <div class="sources">
+            <p><strong>[1] 北京大学图书馆 · 和声厅服务</strong>：官方页面明确支持朗读、演练和小组讨论；使用前仍需核验当天安排。</p>
+            <p><a href="https://lib.pku.edu.cn/portal/cn/hdjl/fwyy/hst" target="_blank" rel="noreferrer">打开官方入口</a></p>
+            <p>图书馆普通阅览区因“已满座”被当前问题淘汰；消费型场所因“不消费”被淘汰。</p>
+          </div>
+        </details>
+        <noscript><p>当前首选：理教一层公共区。现在做：到场确认插座；没有可用插座时转去已确认供电的学习区。</p></noscript>
+      </section>
+    </main>
+  </div>
   <script>
-    const filters=[...document.querySelectorAll('.filter')],cards=[...document.querySelectorAll('.card')],empty=document.getElementById('empty'),toast=document.getElementById('toast');
-    filters.forEach(button=>button.addEventListener('click',()=>{filters.forEach(item=>item.setAttribute('aria-pressed','false'));button.setAttribute('aria-pressed','true');const mode=button.dataset.filter;let visible=0;cards.forEach(card=>{const show=mode==='all'||card.dataset.tags.split(' ').includes(mode);card.hidden=!show;if(show)visible++});empty.style.display=visible?'none':'block'}));
-    document.querySelectorAll('.copy').forEach(button=>button.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(button.dataset.copy);toast.textContent=`已复制：${button.dataset.copy}`}catch{toast.textContent=`请手动复制：${button.dataset.copy}`}toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),1800)}));
+    const buttons=[...document.querySelectorAll('.filter')];
+    const decision=document.querySelector('#decision');
+    const reason=document.querySelector('#reason');
+    const stops=[...document.querySelectorAll('.stop')];
+    const copy=document.querySelector('#copy');
+    const toast=document.querySelector('#toast');
+    const change=document.querySelector('#change');
+    function active(name){return document.querySelector(`[data-filter="${name}"]`).getAttribute('aria-pressed')==='true'}
+    function choose(){
+      const talk=active('talk'),plug=active('plug');
+      const name=talk?'图书馆和声厅':plug?'理教一层公共区':'二教公共学习点';
+      decision.textContent=`先去${name}。`;
+      reason.textContent=talk?'需要发声时，和声厅比安静阅览区更匹配。':plug?'两小时空课，步行成本低；插座需到场确认。':'不再强求插座，优先减少课间折返。';
+      change.innerHTML=talk?'<strong>会改变首选：</strong>若当天需要预约且无余量，改找允许讨论的教学楼公共区。':'<strong>会改变首选：</strong>若现场不满足当前硬条件，立即使用下一个合格地点。';
+      stops.forEach(stop=>stop.classList.toggle('primary-stop',stop.dataset.place===name));
+      copy.dataset.copy=name;
+    }
+    buttons.forEach(button=>button.addEventListener('click',()=>{
+      const next=button.getAttribute('aria-pressed')!=='true';
+      button.setAttribute('aria-pressed',String(next));
+      if(button.dataset.filter==='talk'&&next) document.querySelector('[data-filter="quiet"]').setAttribute('aria-pressed','false');
+      choose();
+    }));
+    copy.addEventListener('click',async()=>{
+      const value=copy.dataset.copy||'理教一层公共区';
+      try{await navigator.clipboard.writeText(value);toast.textContent=`已复制：${value}`}
+      catch{toast.textContent=`请复制：${value}`}
+    });
+    choose();
   </script>
 </body>
 </html>
