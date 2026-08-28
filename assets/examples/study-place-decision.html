@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>自习地点三选一｜北大新生生存导航</title>
+  <style>
+    :root{--stone:#dce6e3;--paper:#f7f8f5;--ink:#17231f;--red:#7c2435;--yellow:#d9a928;--lake:#2d6274;--line:#9aaca6;--muted:#5d6b66;--shadow:0 18px 50px rgba(23,35,31,.11)}
+    *{box-sizing:border-box}
+    html{background:var(--stone);color:var(--ink);font-family:"PingFang SC","Microsoft YaHei",sans-serif;line-height:1.55}
+    body{margin:0;min-height:100vh;background:linear-gradient(90deg,rgba(45,98,116,.06) 1px,transparent 1px);background-size:32px 32px}
+    a{color:var(--lake);text-underline-offset:3px}
+    button{font:inherit}
+    button:focus-visible,a:focus-visible,summary:focus-visible{outline:3px solid var(--yellow);outline-offset:3px}
+    .shell{width:min(1120px,calc(100% - 32px));margin:24px auto 56px;background:var(--paper);border:1px solid rgba(23,35,31,.18);box-shadow:var(--shadow)}
+    .utility{display:flex;gap:12px;flex-wrap:wrap;align-items:center;padding:12px 18px;background:var(--ink);color:white;font:600 12px/1.4 "SFMono-Regular",Consolas,monospace;letter-spacing:.04em}
+    .utility .nonofficial{margin-left:auto;color:#ffe4a1}
+    header{display:grid;grid-template-columns:minmax(0,1fr) 230px;gap:28px;padding:42px clamp(22px,5vw,64px) 36px;border-bottom:1px solid rgba(23,35,31,.18)}
+    .eyebrow{margin:0 0 10px;color:var(--red);font:700 13px/1.4 "SFMono-Regular",Consolas,monospace;letter-spacing:.08em;text-transform:uppercase}
+    h1{max-width:760px;margin:0;font:700 clamp(34px,5.2vw,62px)/1.04 "STSong","Songti SC",serif;letter-spacing:-.035em}
+    .lead{max-width:720px;margin:20px 0 0;font-size:18px;color:#34443e}
+    .query{align-self:end;padding:18px;border-left:5px solid var(--yellow);background:white}
+    .query b{display:block;margin-bottom:6px;font-size:13px;color:var(--muted)}
+    .controls{display:flex;gap:10px;flex-wrap:wrap;padding:20px clamp(22px,5vw,64px);border-bottom:1px solid rgba(23,35,31,.18)}
+    .filter{min-height:44px;padding:8px 15px;border:1px solid var(--ink);border-radius:999px;background:transparent;color:var(--ink);cursor:pointer}
+    .filter[aria-pressed="true"]{background:var(--ink);color:white}
+    .route{position:relative;padding:32px clamp(22px,5vw,64px) 46px}
+    .route::before{content:"";position:absolute;top:52px;bottom:72px;left:calc(clamp(22px,5vw,64px) + 17px);width:3px;background:var(--line)}
+    .card{position:relative;display:grid;grid-template-columns:54px minmax(0,1fr);gap:18px;margin-bottom:22px;transition:opacity .18s ease,transform .18s ease}
+    .card[hidden]{display:none}
+    .node{position:relative;z-index:1;width:38px;height:38px;display:grid;place-items:center;border:3px solid var(--ink);border-radius:50%;background:var(--paper);font:700 13px "SFMono-Regular",Consolas,monospace}
+    .card:first-child .node{background:var(--red);border-color:var(--red);color:white}
+    .panel{background:white;border:1px solid rgba(23,35,31,.24);padding:24px}
+    .panel-top{display:flex;align-items:flex-start;justify-content:space-between;gap:18px}
+    .role{margin:0 0 5px;color:var(--red);font:700 12px "SFMono-Regular",Consolas,monospace;letter-spacing:.08em}
+    h2{margin:0;font:700 clamp(24px,3vw,34px)/1.15 "STSong","Songti SC",serif}
+    .confidence{white-space:nowrap;padding:5px 9px;background:var(--stone);color:var(--lake);font-size:12px;font-weight:700}
+    .reason{margin:12px 0 16px;font-size:17px}
+    .facts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:rgba(23,35,31,.18);border:1px solid rgba(23,35,31,.18)}
+    .fact{min-height:88px;padding:12px;background:var(--paper)}
+    .fact span{display:block;margin-bottom:4px;color:var(--muted);font-size:12px}
+    .fact strong{font-size:14px}
+    .warning{margin:16px 0 0;padding:12px 14px;border-left:4px solid var(--yellow);background:#fff8dc}
+    .actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+    .action{min-height:44px;padding:10px 14px;border:1px solid var(--ink);background:var(--ink);color:white;cursor:pointer;text-decoration:none}
+    .action.secondary{background:white;color:var(--ink)}
+    .empty{display:none;margin:20px 0;padding:24px;border:1px dashed var(--red);color:var(--red)}
+    .evidence{padding:0 clamp(22px,5vw,64px) 42px}
+    details{border-top:1px solid rgba(23,35,31,.25)}
+    summary{min-height:52px;display:flex;align-items:center;cursor:pointer;font-weight:700}
+    .sources{display:grid;grid-template-columns:1fr 1fr;gap:22px;padding:0 0 22px}
+    .sources h3{margin:0 0 8px;font-size:14px}
+    .sources ol{margin:0;padding-left:22px;color:#34443e}
+    footer{padding:20px clamp(22px,5vw,64px);background:#edf1ee;color:#4b5a55;font-size:13px}
+    .toast{position:fixed;right:18px;bottom:18px;padding:12px 16px;background:var(--ink);color:white;box-shadow:var(--shadow);opacity:0;transform:translateY(10px);pointer-events:none;transition:.2s ease}
+    .toast.show{opacity:1;transform:none}
+    @media(max-width:760px){.shell{width:min(100% - 16px,1120px);margin:8px auto 24px}.utility .nonofficial{margin-left:0}header{grid-template-columns:1fr;padding-top:30px}.query{align-self:auto}.facts{grid-template-columns:1fr 1fr}.panel-top{display:block}.confidence{display:inline-block;margin-top:10px}.sources{grid-template-columns:1fr}.route::before{left:calc(clamp(22px,5vw,64px) + 14px)}.card{grid-template-columns:46px minmax(0,1fr)}.node{width:32px;height:32px}.panel{padding:18px}}
+    @media(max-width:430px){.facts{grid-template-columns:1fr}.action{width:100%;text-align:center}}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important}}
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <div class="utility"><span>2026—2027 学年</span><span>地点决策</span><span>示例核验：2026-08-28</span><span class="nonofficial">非北京大学官方产品</span></div>
+    <header>
+      <div><p class="eyebrow">燕园路径签 · 两小时空课</p><h1>先去能完成任务的地方，再追求“完美座位”。</h1><p class="lead">示例结论：如果你必须低声讨论，和声厅的空间属性最明确；如果必须插电，图书馆 201 BYOD 只可作为待复核候选，因为插座信息来自历史页面。</p></div>
+      <aside class="query"><b>示例问题</b>“我在二教，有两个小时，想插电，最好能低声讨论。”<br><small>距离尚未调用地图核验。</small></aside>
+    </header>
+    <nav class="controls" aria-label="筛选地点">
+      <button class="filter" type="button" data-filter="all" aria-pressed="true">全部候选</button>
+      <button class="filter" type="button" data-filter="plug" aria-pressed="false">只看有插座线索</button>
+      <button class="filter" type="button" data-filter="talk" aria-pressed="false">只看可讨论</button>
+      <button class="filter" type="button" data-filter="official" aria-pressed="false">只看官方现行信息</button>
+    </nav>
+    <section class="route" aria-live="polite">
+      <article class="card" data-tags="talk official"><div class="node">A</div><div class="panel"><div class="panel-top"><div><p class="role">最稳妥 · 讨论任务</p><h2>图书馆和声厅</h2></div><span class="confidence">官方现行入口</span></div><p class="reason">官方明确描述可朗读、演练 PPT 和小组讨论；更符合“需要发声”的硬条件。[1]</p><div class="facts"><div class="fact"><span>声音</span><strong>可讨论</strong></div><div class="fact"><span>插座</span><strong>当前未知</strong></div><div class="fact"><span>开放</span><strong>需当日复核</strong></div><div class="fact"><span>从二教</span><strong>待地图核验</strong></div></div><p class="warning"><strong>先做一步：</strong>打开空间页确认当天是否开放、是否需要预约。插座未核实，必须插电时带好备用电源或选择 Plan B。</p><div class="actions"><a class="action" href="https://lib.pku.edu.cn/portal/cn/hdjl/fwyy/hst" target="_blank" rel="noreferrer">核验和声厅</a><button class="action secondary copy" type="button" data-copy="北京大学图书馆 和声厅">复制地点名</button></div></div></article>
+      <article class="card" data-tags="talk"><div class="node">B</div><div class="panel"><div class="panel-top"><div><p class="role">最近候选 · 先现场确认</p><h2>二教“树下空间”</h2></div><span class="confidence">经验 · 中低可信度</span></div><p class="reason">公开学生整理曾提到二教三、四楼有自习点与讨论隔间，但这不是当前官方开放承诺。[E1]</p><div class="facts"><div class="fact"><span>声音</span><strong>有讨论区线索</strong></div><div class="fact"><span>插座</span><strong>未知</strong></div><div class="fact"><span>开放</span><strong>现场确认</strong></div><div class="fact"><span>从二教</span><strong>同楼候选</strong></div></div><p class="warning"><strong>使用条件：</strong>先看现场标识和课程占用。若插座是硬条件，未确认前不要把它当作唯一方案。</p><div class="actions"><button class="action secondary copy" type="button" data-copy="北京大学第二教学楼 树下空间">复制检索词</button></div></div></article>
+      <article class="card" data-tags="plug"><div class="node">C</div><div class="panel"><div class="panel-top"><div><p class="role">插电候选 · 历史信息待复核</p><h2>图书馆 201 BYOD</h2></div><span class="confidence">官方历史信息</span></div><p class="reason">图书馆历史页面曾说明该区座位配有电源插座；信息较旧，只能作为候选线索。[2]</p><div class="facts"><div class="fact"><span>声音</span><strong>偏安静</strong></div><div class="fact"><span>插座</span><strong>历史确认</strong></div><div class="fact"><span>开放</span><strong>当前待核验</strong></div><div class="fact"><span>从二教</span><strong>待地图核验</strong></div></div><p class="warning"><strong>风险：</strong>名称、布局和插座数量可能已经变化。先查图书馆当前空间布局；无法确认时，不进入实时推荐前三。</p><div class="actions"><a class="action" href="https://www.lib.pku.edu.cn/3wxbz/index.htm" target="_blank" rel="noreferrer">看当前空间布局</a><button class="action secondary copy" type="button" data-copy="北京大学图书馆 201 BYOD 学习区">复制地点名</button></div></div></article>
+      <p class="empty" id="empty">没有同时满足此筛选条件且证据足够的地点。请减少一个条件，或先核验插座和开放状态。</p>
+    </section>
+    <section class="evidence"><details><summary>展开依据与更新时间</summary><div class="sources"><div><h3>官方依据</h3><ol><li><a href="https://lib.pku.edu.cn/portal/cn/hdjl/fwyy/hst">北京大学图书馆｜和声厅服务</a>，现行服务介绍，检索于 2026-08-28。</li><li><a href="https://www.lib.pku.edu.cn/portal/cn/news/0000001269">北京大学图书馆｜201 BYOD 学习区</a>，历史页面，仅作背景。</li></ol></div><div><h3>经验依据</h3><ol><li><a href="https://www.sohu.com/a/711485131_121124324">公开学生资源整理｜二教树下空间</a>，2023 年发布，中低可信度，需现场复核。</li></ol></div></div></details></section>
+    <footer>信息核验：本页是结构与交互验收样例，不是实时地点推荐。制度与开放状态以北京大学最新正式页面为准；地点环境与设施包含经验或历史信息，行动前请再次打开所附入口核验。</footer>
+  </main>
+  <div class="toast" id="toast" role="status" aria-live="polite">已复制</div>
+  <noscript><p style="padding:16px;background:#fff8dc">JavaScript 已关闭。所有候选与依据仍可阅读，但筛选和复制按钮不可用。</p></noscript>
+  <script>
+    const filters=[...document.querySelectorAll('.filter')],cards=[...document.querySelectorAll('.card')],empty=document.getElementById('empty'),toast=document.getElementById('toast');
+    filters.forEach(button=>button.addEventListener('click',()=>{filters.forEach(item=>item.setAttribute('aria-pressed','false'));button.setAttribute('aria-pressed','true');const mode=button.dataset.filter;let visible=0;cards.forEach(card=>{const show=mode==='all'||card.dataset.tags.split(' ').includes(mode);card.hidden=!show;if(show)visible++});empty.style.display=visible?'none':'block'}));
+    document.querySelectorAll('.copy').forEach(button=>button.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(button.dataset.copy);toast.textContent=`已复制：${button.dataset.copy}`}catch{toast.textContent=`请手动复制：${button.dataset.copy}`}toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),1800)}));
+  </script>
+</body>
+</html>
