@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="zh-CN" data-example-type="arrival" data-v3-workbench="true">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>报到准备工作台｜燕园路径签 V3</title>
+  <style>
+    :root{
+      --mist:#dce6e3;--paper:#f7f8f5;--ink:#17231f;--red:#7c2435;
+      --gold:#d9a928;--blue:#2d6274;--line:#b6c8c2;--muted:#5b6964;
+      --soft:#edf2ef;--warn:#f8f2d8;--shadow:0 20px 55px rgba(23,35,31,.11)
+    }
+    *{box-sizing:border-box}
+    html{color-scheme:light}
+    body{margin:0;background:var(--mist);color:var(--ink);font-family:"PingFang SC","Microsoft YaHei",sans-serif;line-height:1.55}
+    button,a,input{font:inherit}
+    button:focus-visible,a:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+    button{cursor:pointer}
+    .app{width:min(1500px,calc(100% - 32px));margin:18px auto 38px}
+    .topbar{min-height:56px;display:flex;align-items:center;justify-content:space-between;gap:18px;padding:0 18px;border:1px solid var(--line);border-bottom:0;border-radius:20px 20px 0 0;background:rgba(247,248,245,.84)}
+    .brand{display:flex;align-items:center;gap:12px;font-family:STSong,"Songti SC",serif;font-weight:700}
+    .brand-mark{width:28px;height:28px;display:grid;place-items:center;border-radius:50%;background:var(--red);color:#fff;font:800 12px/1 ui-monospace,monospace}
+    .stage-label,.source-state{color:var(--muted);font:12px/1.35 ui-monospace,SFMono-Regular,Menlo,monospace}
+    .stage-label strong{color:var(--red)}
+    .demo{padding:6px 9px;border:1px solid var(--line);border-radius:99px;white-space:nowrap}
+    .layout{display:grid;grid-template-columns:minmax(270px,32fr) minmax(0,68fr);min-height:790px;border:1px solid var(--line);border-radius:0 0 24px 24px;overflow:hidden;background:var(--paper);box-shadow:var(--shadow)}
+    .conversation{display:flex;flex-direction:column;border-right:1px solid var(--line);background:#e9efec}
+    .conversation-head{padding:22px 24px 16px;border-bottom:1px solid var(--line)}
+    .conversation-head p{margin:0;color:var(--blue);font:700 11px/1.3 ui-monospace,monospace;letter-spacing:.08em}
+    .conversation-head h2{margin:5px 0 0;font:700 25px/1.15 STSong,"Songti SC",serif}
+    .messages{display:grid;gap:16px;padding:22px 24px}
+    .message{max-width:94%;padding:14px 16px;border:1px solid var(--line);border-radius:16px;background:var(--paper);font-size:14px}
+    .message.user{justify-self:end;background:var(--ink);color:#fff;border-color:var(--ink);border-bottom-right-radius:5px}
+    .message.assistant{border-bottom-left-radius:5px}
+    .message small{display:block;margin-bottom:6px;color:var(--blue);font:700 10px/1.3 ui-monospace,monospace;letter-spacing:.08em}
+    .message.user small{color:#bfd0ca}
+    .message p{margin:0}
+    .used-data{margin:auto 24px 22px;padding:14px 0 0;border-top:1px solid var(--line);color:var(--muted);font-size:12px}
+    .used-data strong{display:block;margin-bottom:5px;color:var(--ink)}
+    .workbench{min-width:0;background:var(--paper)}
+    .workbar{min-height:68px;display:flex;align-items:center;justify-content:space-between;gap:18px;padding:12px 26px;border-bottom:1px solid var(--line)}
+    .workbar h1{margin:0;font:700 24px/1.15 STSong,"Songti SC",serif}
+    .workbar p{margin:4px 0 0;color:var(--muted);font:11px/1.3 ui-monospace,monospace}
+    .toolbar{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:8px}
+    .tool,.primary{min-height:44px;padding:0 14px;border-radius:10px;font-weight:700}
+    .tool{border:1px solid var(--line);background:transparent;color:var(--ink)}
+    .tool:hover{border-color:var(--blue);color:var(--blue)}
+    .primary{border:0;background:var(--red);color:#fff}
+    .hero{display:grid;grid-template-columns:minmax(0,1fr) 210px;gap:28px;align-items:end;padding:30px 32px 26px;border-bottom:1px solid var(--line)}
+    .eyebrow{margin:0 0 7px;color:var(--red);font:800 11px/1.3 ui-monospace,monospace;letter-spacing:.12em}
+    .hero h2{margin:0;max-width:720px;font:700 clamp(34px,4.5vw,60px)/1.04 STSong,"Songti SC",serif;letter-spacing:-.045em}
+    .hero-copy{margin:13px 0 0;color:var(--muted)}
+    .hero-mobile-action{display:none;margin-top:18px}
+    .progress{text-align:right}
+    .progress strong{display:block;font:800 42px/1 ui-monospace,monospace}
+    .progress span{color:var(--muted);font-size:12px}
+    .bar{height:6px;margin-top:12px;overflow:hidden;border-radius:99px;background:var(--line)}
+    .bar i{display:block;width:25%;height:100%;background:var(--red);transition:width .25s ease}
+    .workspace-grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(270px,.75fr);min-height:470px}
+    .journey{padding:28px 32px}
+    .section-title{display:flex;justify-content:space-between;gap:16px;align-items:end;margin-bottom:20px}
+    .section-title h3{margin:0;font-size:15px}
+    .section-title p{margin:0;color:var(--muted);font-size:12px}
+    .spine{position:relative}
+    .spine::before{content:"";position:absolute;left:17px;top:18px;bottom:18px;width:3px;background:linear-gradient(var(--red) 0 29%,var(--gold) 29% 55%,var(--blue) 55% 76%,var(--line) 76%)}
+    .step{position:relative;display:grid;grid-template-columns:36px minmax(0,1fr) auto;gap:15px;padding:0 0 24px}
+    .step:last-child{padding-bottom:0}
+    .node{position:relative;z-index:1;width:36px;height:36px;display:grid;place-items:center;border:2px solid var(--line);border-radius:50%;background:var(--paper);font:800 11px/1 ui-monospace,monospace}
+    .step.current .node{border-color:var(--red);background:var(--red);color:#fff;box-shadow:0 0 0 6px #f0dfe2}
+    .step.next .node{border-color:var(--gold);color:#6a5310}
+    .step h4{margin:0 0 4px;font:700 19px/1.2 STSong,"Songti SC",serif}
+    .step p{margin:0;color:var(--muted);font-size:13px}
+    .step time,.evidence-state{white-space:nowrap;color:var(--blue);font:11px/1.4 ui-monospace,monospace}
+    .task-list{margin-top:12px;display:grid;gap:7px}
+    .task{display:grid;grid-template-columns:24px minmax(0,1fr);gap:9px;align-items:start;padding:9px 10px;border:1px solid var(--line);border-radius:10px;background:#fff}
+    .task input{appearance:none;width:20px;height:20px;margin:1px 0 0;border:2px solid var(--blue);border-radius:5px}
+    .task input:checked{background:var(--blue);box-shadow:inset 0 0 0 3px #fff}
+    .task strong{display:block;font-size:13px}
+    .task span{display:block;color:var(--muted);font-size:11px}
+    .side{padding:28px 28px 24px;border-left:1px solid var(--line);background:var(--soft)}
+    .next-action{padding:20px;border-left:5px solid var(--red);background:var(--paper)}
+    .next-action small{color:var(--red);font:800 10px/1.3 ui-monospace,monospace;letter-spacing:.1em}
+    .next-action h3{margin:8px 0 6px;font:700 24px/1.15 STSong,"Songti SC",serif}
+    .next-action p{margin:0 0 16px;color:var(--muted);font-size:13px}
+    .next-action .primary{width:100%}
+    .window{margin-top:18px;padding:16px;border:1px solid #d9c067;background:var(--warn)}
+    .window strong{display:block;margin-bottom:5px;font-size:13px}
+    .window p{margin:0;color:#665923;font-size:12px}
+    .support{margin-top:18px}
+    .support details{border-top:1px solid var(--line)}
+    .support summary{min-height:48px;display:flex;align-items:center;font-weight:700;cursor:pointer}
+    .support p,.support li{color:var(--muted);font-size:12px}
+    .support a{color:var(--blue)}
+    .operation{margin-top:16px;padding-top:14px;border-top:1px solid var(--line);font-size:12px}
+    .operation strong{display:block;margin-bottom:5px}
+    .operation p{margin:0;color:var(--muted)}
+    .operation p.success{color:var(--blue)}
+    dialog{width:min(600px,calc(100% - 28px));max-height:85vh;padding:0;border:1px solid var(--line);border-radius:20px;background:var(--paper);color:var(--ink);box-shadow:0 28px 90px rgba(23,35,31,.28)}
+    dialog::backdrop{background:rgba(23,35,31,.45)}
+    .dialog-head{padding:22px 24px 16px;border-bottom:1px solid var(--line)}
+    .dialog-head h2{margin:0;font:700 28px/1.15 STSong,"Songti SC",serif}
+    .dialog-head p{margin:7px 0 0;color:var(--muted);font-size:13px}
+    .dialog-body{padding:20px 24px}
+    .preview-item{display:grid;grid-template-columns:24px minmax(0,1fr);gap:10px;padding:12px 0;border-bottom:1px solid var(--line)}
+    .preview-item input{width:20px;height:20px;margin:2px 0 0}
+    .preview-item strong{display:block}
+    .preview-item span{color:var(--muted);font-size:12px}
+    .share-card{padding:18px;border:1px solid var(--line);background:#fff}
+    .share-card h3{margin:0 0 9px;font:700 23px/1.2 STSong,"Songti SC",serif}
+    .share-card p{margin:7px 0;font-size:13px}
+    .removed{margin-top:14px;color:var(--blue);font-size:12px}
+    .dialog-actions{display:flex;justify-content:flex-end;gap:9px;padding:16px 24px 22px}
+    .dialog-actions button{min-height:44px;padding:0 15px;border-radius:10px;font-weight:700}
+    .secondary{border:1px solid var(--blue);background:transparent;color:var(--blue)}
+    .status-live{min-height:20px;margin:0;padding:0 24px 18px;color:var(--red);font-weight:700;font-size:12px}
+    @media(max-width:980px){
+      .layout{grid-template-columns:280px minmax(0,1fr)}
+      .hero{grid-template-columns:1fr}.progress{text-align:left;max-width:230px}
+      .workspace-grid{grid-template-columns:1fr}.side{border-left:0;border-top:1px solid var(--line)}
+    }
+    @media(max-width:760px){
+      .app{width:min(100% - 18px,1500px);margin-top:9px}
+      .topbar{align-items:flex-start;padding:12px 14px}.source-state{display:none}
+      .layout{display:block;min-height:0}.conversation{border-right:0;border-bottom:1px solid var(--line)}
+      .conversation-head,.message.user,.message.assistant:not(:last-child),.used-data{display:none}
+      .messages{padding:10px 14px}.message{display:none;max-width:100%}.message:last-child{display:block;padding:10px 12px;border-radius:10px}.message:last-child small{display:none}
+      .workbar{align-items:flex-start;flex-direction:column;padding:17px 20px}.toolbar{justify-content:flex-start}
+      .hero{padding:24px 20px 22px}.hero h2{font-size:38px}.hero-mobile-action{display:inline-flex}
+      .workspace-grid{display:flex;flex-direction:column}.side{order:-1;border-top:0;border-bottom:1px solid var(--line)}
+      .journey,.side{padding:23px 20px}.step{grid-template-columns:36px minmax(0,1fr)}.step time{grid-column:2}
+    }
+    @media(max-width:380px){
+      .app{width:calc(100% - 10px)}.brand span:last-child{display:none}.stage-label{font-size:10px}
+      .toolbar{display:grid;grid-template-columns:1fr 1fr;width:100%}.toolbar button{padding:0 9px}
+      .hero h2{font-size:33px}.hero-mobile-action{width:100%}.section-title{display:block}.section-title p{margin-top:4px}
+      .dialog-actions{flex-direction:column}.dialog-actions button{width:100%}
+    }
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand"><span class="brand-mark" aria-hidden="true">燕</span><span>燕园路径签</span></div>
+      <div class="stage-label">当前阶段：<strong>开学前两周</strong> · 下一窗口：正式上课</div>
+      <div class="source-state"><span class="demo">演示数据 · 生成于 2026-08-31</span></div>
+    </header>
+
+    <div class="layout">
+      <aside class="conversation" data-role="conversation-panel" aria-label="任务对话">
+        <header class="conversation-head"><p>CONVERSATION</p><h2>报到准备</h2></header>
+        <div class="messages">
+          <div class="message user"><small>你的目标</small><p>我已经报到了，接下来两周别漏掉重要事情。</p></div>
+          <div class="message assistant"><small>助手判断</small><p>先确认开学典礼和正式上课两个已核实节点；其余事项放进阶段清单，不制造额外截止日。</p></div>
+          <div class="message assistant" id="change-message"><small>变化摘要</small><p>当前还有 3 项未完成。完成一项后，右侧会自动推进下一步。</p></div>
+        </div>
+        <div class="used-data"><strong>本次使用的信息</strong>阶段：开学前两周；校区：校本部。未读取学号、宿舍房间或个人课表。</div>
+      </aside>
+
+      <main class="workbench" data-role="task-workbench">
+        <header class="workbar">
+          <div><h1>开学前两周工作台</h1><p>TIME WORKBENCH · EXECUTION MODE</p></div>
+          <div class="toolbar" aria-label="转换与导出">
+            <button class="tool" id="calendar-preview">加入日历</button>
+            <button class="tool" id="share-preview">生成分享版</button>
+            <button class="tool" id="copy-summary">复制摘要</button>
+          </div>
+        </header>
+
+        <section class="hero" aria-labelledby="decision">
+          <div>
+            <p class="eyebrow">当前动作 · 已核实节点优先</p>
+            <h2 id="decision" data-role="primary-decision">先预览两个校历节点。</h2>
+            <p class="hero-copy">开学典礼和正式上课日期来自当年迎新网；导入前仍可以逐项取消。</p>
+            <button class="primary hero-mobile-action" id="hero-calendar">预览加入日历</button>
+          </div>
+          <div class="progress" aria-live="polite"><strong id="progress-count">1 / 4</strong><span>阶段任务已完成</span><div class="bar"><i id="progress-bar"></i></div></div>
+        </section>
+
+        <div class="workspace-grid">
+          <section class="journey" aria-label="阶段路径">
+            <div class="section-title"><h3>从报到完成走到正式上课</h3><p>路径节点代表真实依赖，不是装饰</p></div>
+            <div class="spine">
+              <article class="step current">
+                <span class="node">现</span>
+                <div>
+                  <h4>确认校历节点</h4>
+                  <p>只把当年官方已确认的精确日期加入日历。</p>
+                  <div class="task-list">
+                    <label class="task"><input type="checkbox" checked data-task><span><strong>完成报到</strong><span>完成标准：已领取校内必要凭证。</span></span></label>
+                    <label class="task"><input type="checkbox" data-task><span><strong>保存开学节点</strong><span>完成标准：确认开学典礼与正式上课日期。</span></span></label>
+                  </div>
+                </div>
+                <time>NOW</time>
+              </article>
+              <article class="step next">
+                <span class="node">次</span>
+                <div>
+                  <h4>打通数字入口</h4>
+                  <p>确认门户、邮箱和校园网能正常使用；不在此页面输入密码。</p>
+                  <div class="task-list">
+                    <label class="task"><input type="checkbox" data-task><span><strong>测试门户与邮箱</strong><span>完成标准：能自行登录并找到个人事项。</span></span></label>
+                  </div>
+                </div>
+                <time>NEXT</time>
+              </article>
+              <article class="step">
+                <span class="node">后</span>
+                <div>
+                  <h4>准备第一周</h4>
+                  <p>课程具体安排需登录后查看；这里先保留一项个人检查。</p>
+                  <div class="task-list">
+                    <label class="task"><input type="checkbox" data-task><span><strong>核对个人课表</strong><span>完成标准：没有时间冲突，知道第一节课地点。</span></span></label>
+                  </div>
+                </div>
+                <time>LATER</time>
+              </article>
+            </div>
+          </section>
+
+          <aside class="side" aria-label="当前行动与依据">
+            <section class="next-action">
+              <small>NEXT ACTION</small>
+              <h3 id="next-title">预览日历写入</h3>
+              <p id="next-copy">先看将新增哪些事件，再决定是否下载日历文件。</p>
+              <button class="primary" id="primary-action" data-role="primary-action">预览加入日历</button>
+            </section>
+            <section class="window">
+              <strong>会改变当前动作</strong>
+              <p>若迎新网更新日期，重新核验后再生成；不会静默修改已导入日历。</p>
+            </section>
+            <section class="support">
+              <details>
+                <summary>依据、假设与核验状态</summary>
+                <p><span class="evidence-state">● 已核实 [1]</span> 北京大学迎新网列出 2026 年校本部开学典礼与正式上课日期。</p>
+                <p><span class="evidence-state">○ 待核实</span> 个人课表、宿舍安排与院系事项尚未读取。</p>
+                <p><a href="https://fresh.pku.edu.cn/" target="_blank" rel="noreferrer">打开北京大学迎新网</a></p>
+              </details>
+              <details>
+                <summary>门户与权限</summary>
+                <p>本演示未连接个人门户。实际产品只有在合法连接存在且用户按任务授权后读取必要字段。</p>
+                <p><a href="https://apply.pku.edu.cn/freshman/login" target="_blank" rel="noreferrer">打开本科新生服务平台</a></p>
+              </details>
+            </section>
+            <section class="operation" data-role="operation-log" aria-live="polite">
+              <strong>操作记录</strong>
+              <p id="operation-status">尚未执行外部操作。</p>
+            </section>
+          </aside>
+        </div>
+
+        <noscript><p style="padding:18px 24px;border-top:1px solid #b6c8c2">当前动作：到北京大学迎新网核对开学典礼与正式上课日期。随后测试门户与邮箱，并自行核对个人课表。</p></noscript>
+      </main>
+    </div>
+  </div>
+
+  <dialog id="calendar-dialog" aria-labelledby="calendar-title">
+    <div class="dialog-head"><h2 id="calendar-title">预览日历写入</h2><p>只包含演示快照中已核实的精确日期。取消勾选即可排除。</p></div>
+    <div class="dialog-body">
+      <label class="preview-item"><input type="checkbox" checked data-calendar-event="ceremony"><span><strong>校本部开学典礼</strong><span>2026-09-04 · 演示日期 · 来源 [1]</span></span></label>
+      <label class="preview-item"><input type="checkbox" checked data-calendar-event="classes"><span><strong>正式上课</strong><span>2026-09-07 · 演示日期 · 来源 [1]</span></span></label>
+    </div>
+    <p class="status-live" id="calendar-status" role="status"></p>
+    <form method="dialog" class="dialog-actions"><button class="secondary" value="cancel">取消</button><button class="primary" type="button" id="download-calendar">下载已选日历</button></form>
+  </dialog>
+
+  <dialog id="share-dialog" aria-labelledby="share-title">
+    <div class="dialog-head"><h2 id="share-title">家长分享版预览</h2><p>这是从个人工作台重新生成的脱敏副本。</p></div>
+    <div class="dialog-body">
+      <article class="share-card">
+        <h3>开学前两周，先做这三件事</h3>
+        <p>① 保存学校已确认的开学节点。</p>
+        <p>② 测试门户、邮箱与校园网。</p>
+        <p>③ 上课前自行核对个人课表和第一节课地点。</p>
+        <p><span class="evidence-state">生成于 2026-08-31 · 适用于校本部演示场景</span></p>
+      </article>
+      <p class="removed">已移除：学号、宿舍房间、个人课表、起点与私人备注。</p>
+    </div>
+    <p class="status-live" id="share-status" role="status"></p>
+    <form method="dialog" class="dialog-actions"><button class="secondary" value="cancel">返回修改</button><button class="primary" type="button" id="copy-share">复制脱敏内容</button></form>
+  </dialog>
+
+  <script>
+    const tasks=[...document.querySelectorAll('[data-task]')];
+    const progressCount=document.querySelector('#progress-count');
+    const progressBar=document.querySelector('#progress-bar');
+    const changeMessage=document.querySelector('#change-message p');
+    const nextTitle=document.querySelector('#next-title');
+    const nextCopy=document.querySelector('#next-copy');
+    const primaryAction=document.querySelector('#primary-action');
+    const operationStatus=document.querySelector('#operation-status');
+    const calendarDialog=document.querySelector('#calendar-dialog');
+    const shareDialog=document.querySelector('#share-dialog');
+    const summary='开学前两周：先保存已核实校历节点，再测试门户与邮箱，最后自行核对个人课表。';
+
+    function updateProgress(){
+      const done=tasks.filter(task=>task.checked).length;
+      progressCount.textContent=done+' / '+tasks.length;
+      progressBar.style.width=(done/tasks.length*100)+'%';
+      changeMessage.textContent=done===tasks.length?'当前阶段任务已全部检查。下一步等待正式上课。':'当前还有 '+(tasks.length-done)+' 项未完成。完成一项后，右侧会自动推进下一步。';
+      if(!tasks[1].checked){nextTitle.textContent='预览日历写入';nextCopy.textContent='先看将新增哪些事件，再决定是否下载日历文件。';primaryAction.textContent='预览加入日历';primaryAction.dataset.action='calendar'}
+      else if(!tasks[2].checked){nextTitle.textContent='测试门户与邮箱';nextCopy.textContent='请在官方页面自行登录；此工作台不接触密码。';primaryAction.textContent='打开新生服务平台';primaryAction.dataset.action='portal'}
+      else{nextTitle.textContent='核对个人课表';nextCopy.textContent='登录后自行确认课程时间和第一节课地点。';primaryAction.textContent='打开教务学生服务';primaryAction.dataset.action='dean'}
+    }
+
+    tasks.forEach(task=>task.addEventListener('change',updateProgress));
+    document.querySelector('#calendar-preview').addEventListener('click',()=>calendarDialog.showModal());
+    document.querySelector('#hero-calendar').addEventListener('click',()=>calendarDialog.showModal());
+    document.querySelector('#share-preview').addEventListener('click',()=>shareDialog.showModal());
+    primaryAction.addEventListener('click',()=>{
+      if(primaryAction.dataset.action==='calendar') calendarDialog.showModal();
+      else if(primaryAction.dataset.action==='portal') window.open('https://apply.pku.edu.cn/freshman/login','_blank','noopener');
+      else window.open('https://dean.pku.edu.cn/web/student.php','_blank','noopener');
+    });
+
+    document.querySelector('#copy-summary').addEventListener('click',async()=>{
+      try{await navigator.clipboard.writeText(summary);operationStatus.textContent='已复制个人摘要。';operationStatus.className='success'}
+      catch{operationStatus.textContent='复制失败，请手动选择摘要文字。'}
+    });
+
+    document.querySelector('#copy-share').addEventListener('click',async()=>{
+      const share='开学前两周，先做三件事：1. 保存学校已确认的开学节点；2. 测试门户、邮箱与校园网；3. 上课前自行核对个人课表。生成于 2026-08-31。';
+      try{await navigator.clipboard.writeText(share);document.querySelector('#share-status').textContent='已复制脱敏分享内容。';operationStatus.textContent='已生成并复制脱敏分享版。';operationStatus.className='success'}
+      catch{document.querySelector('#share-status').textContent='复制失败，请手动选择分享内容。'}
+    });
+
+    document.querySelector('#download-calendar').addEventListener('click',()=>{
+      const selected=[...document.querySelectorAll('[data-calendar-event]:checked')].map(item=>item.dataset.calendarEvent);
+      if(!selected.length){document.querySelector('#calendar-status').textContent='请至少选择一个事件。';return}
+      const events=[];
+      if(selected.includes('ceremony')) events.push('BEGIN:VEVENT\r\nUID:demo-ceremony@pku-navigator-v3\r\nDTSTART;TZID=Asia/Shanghai:20260904T090000\r\nSUMMARY:校本部开学典礼（演示）\r\nURL:https://fresh.pku.edu.cn/\r\nEND:VEVENT');
+      if(selected.includes('classes')) events.push('BEGIN:VEVENT\r\nUID:demo-classes@pku-navigator-v3\r\nDTSTART;VALUE=DATE:20260907\r\nSUMMARY:正式上课（演示）\r\nURL:https://fresh.pku.edu.cn/\r\nEND:VEVENT');
+      const ics='BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//PKU Freshman Navigator//V3//ZH\r\n'+events.join('\r\n')+'\r\nEND:VCALENDAR';
+      const blob=new Blob([ics],{type:'text/calendar;charset=utf-8'});
+      const url=URL.createObjectURL(blob);
+      const link=document.createElement('a');link.href=url;link.download='pku-arrival-verified-demo.ics';link.click();URL.revokeObjectURL(url);
+      document.querySelector('#calendar-status').textContent='已下载 '+selected.length+' 个已选事件。';
+      operationStatus.textContent='日历预览完成：已下载 '+selected.length+' 个事件；可从日历中删除以撤销。';
+      operationStatus.className='success';
+    });
+    updateProgress();
+  </script>
+</body>
+</html>

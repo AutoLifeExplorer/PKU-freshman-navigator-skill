@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate the V2 skill package using only the Python standard library."""
+"""Validate the V3 skill package using only the Python standard library."""
 
 from __future__ import annotations
 
@@ -10,10 +10,34 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
+EXPECTED_CASES = 26
+EXPECTED_ENGINES = {
+    "action_brief",
+    "decision_panel",
+    "map_route",
+    "process_guide",
+    "time_workbench",
+    "checklist_board",
+    "editable_artifact",
+    "share_media",
+}
+EXPECTED_RISKS = {"low", "medium", "high"}
 
 
 def fail(message: str, errors: list[str]) -> None:
     errors.append(message)
+
+
+def validate_markdown_links(errors: list[str]) -> None:
+    pattern = re.compile(r"\]\(([^)]+)\)")
+    for path in ROOT.rglob("*.md"):
+        text = path.read_text(encoding="utf-8")
+        for target in pattern.findall(text):
+            if target.startswith(("http://", "https://", "#")):
+                continue
+            clean = target.split("#", 1)[0]
+            if clean and not (path.parent / clean).exists():
+                fail(f"{path.relative_to(ROOT)}: missing linked file {target}", errors)
 
 
 def main() -> int:
@@ -29,18 +53,22 @@ def main() -> int:
             fail("unexpected or missing skill name", errors)
         if not re.search(r"^description:\s*\S", text, re.M):
             fail("missing description", errors)
-        for relative in re.findall(r"\]\((references/[^)]+)\)", text):
-            if not (ROOT / relative).exists():
-                fail(f"missing referenced file: {relative}", errors)
+        for phrase in ("一个主输出", "高风险事务", "电脑端默认", "核验模式"):
+            if phrase not in text:
+                fail(f"SKILL.md missing V3 invariant: {phrase}", errors)
 
     expected = [
         "references/source-policy.md",
         "references/source-registry.md",
         "references/experience-seed.md",
         "references/scenario-playbooks.md",
+        "references/journey-playbooks.md",
+        "references/campus-service-playbooks.md",
         "references/output-contracts.md",
         "references/web-ui-spec.md",
+        "references/v3-output-system-design.md",
         "references/maintenance.md",
+        "assets/examples/freshman-arrival-workbench.html",
         "assets/examples/study-place-decision.html",
         "assets/examples/resource-unlock.html",
         "assets/examples/rule-decision-flow.html",
@@ -52,6 +80,8 @@ def main() -> int:
         if not (ROOT / relative).exists():
             fail(f"missing required package file: {relative}", errors)
 
+    validate_markdown_links(errors)
+
     cases_path = ROOT / "tests/cases.json"
     cases: list[dict[str, object]] = []
     if cases_path.exists():
@@ -59,26 +89,64 @@ def main() -> int:
             cases = json.loads(cases_path.read_text(encoding="utf-8"))
         except json.JSONDecodeError as exc:
             fail(f"invalid tests/cases.json: {exc}", errors)
-        if len(cases) != 12:
-            fail("expected exactly 12 fixed behavior cases", errors)
+        if len(cases) != EXPECTED_CASES:
+            fail(f"expected exactly {EXPECTED_CASES} fixed behavior cases", errors)
         ids = [case.get("id") for case in cases]
         if len(ids) != len(set(ids)):
             fail("duplicate test case ids", errors)
-        required = {"id", "prompt", "route", "must_search", "expected_format", "must_ask", "invariants"}
+        required = {
+            "id",
+            "prompt",
+            "route",
+            "must_search",
+            "expected_engine",
+            "must_ask",
+            "risk",
+            "invariants",
+        }
         for index, case in enumerate(cases):
             missing = required - set(case)
             if missing:
                 fail(f"case {index} missing fields: {sorted(missing)}", errors)
+            engine = case.get("expected_engine")
+            if engine not in EXPECTED_ENGINES:
+                fail(f"case {index} has unknown engine: {engine}", errors)
+            risk = case.get("risk")
+            if risk not in EXPECTED_RISKS:
+                fail(f"case {index} has unknown risk: {risk}", errors)
+            invariants = case.get("invariants")
+            if not isinstance(invariants, list) or len(invariants) < 3:
+                fail(f"case {index} needs at least three meaningful invariants", errors)
+
+        required_routes = {
+            "arrival",
+            "course",
+            "place",
+            "campus_life",
+            "health_safety",
+            "financial_support",
+            "digital_service",
+            "campus_participation",
+            "rule",
+            "planning",
+            "fallback",
+            "limited_scope",
+        }
+        actual_routes = {str(case.get("route")) for case in cases}
+        missing_routes = required_routes - actual_routes
+        if missing_routes:
+            fail(f"behavior cases missing routes: {sorted(missing_routes)}", errors)
 
     expected_types = {
+        "freshman-arrival-workbench.html": "arrival",
         "study-place-decision.html": "place",
         "resource-unlock.html": "resource",
         "rule-decision-flow.html": "rule",
         "four-year-radar.html": "planning",
     }
     html_paths = sorted((ROOT / "assets/examples").glob("*.html"))
-    if len(html_paths) != 4:
-        fail(f"expected exactly 4 HTML examples, found {len(html_paths)}", errors)
+    if len(html_paths) != len(expected_types):
+        fail(f"expected exactly {len(expected_types)} HTML examples, found {len(html_paths)}", errors)
 
     for html_path in html_paths:
         html = html_path.read_text(encoding="utf-8")
@@ -113,12 +181,57 @@ def main() -> int:
             if re.search(pattern, html, re.I):
                 fail(f"{html_path.name}: contains {label}", errors)
 
+    arrival = ROOT / "assets/examples/freshman-arrival-workbench.html"
+    if arrival.exists():
+        arrival_text = arrival.read_text(encoding="utf-8")
+        v3_checks = {
+            "V3 marker": 'data-v3-workbench="true"' in arrival_text,
+            "conversation panel": 'data-role="conversation-panel"' in arrival_text,
+            "task workbench": 'data-role="task-workbench"' in arrival_text,
+            "operation log": 'data-role="operation-log"' in arrival_text,
+            "calendar preview dialog": 'id="calendar-dialog"' in arrival_text,
+            "share preview dialog": 'id="share-dialog"' in arrival_text,
+            "redaction preview": "已移除" in arrival_text,
+            "portal permission boundary": "不接触密码" in arrival_text,
+        }
+        for label, ok in v3_checks.items():
+            if not ok:
+                fail(f"freshman-arrival-workbench.html: missing {label}", errors)
+        for token in (
+            "BEGIN:VCALENDAR",
+            "END:VCALENDAR",
+            "DTSTART;TZID=Asia/Shanghai",
+            "URL:https://fresh.pku.edu.cn/",
+        ):
+            if token not in arrival_text:
+                fail(f"freshman-arrival-workbench.html: incomplete calendar preview ({token})", errors)
+
     radar = ROOT / "assets/examples/four-year-radar.html"
     if radar.exists():
         radar_text = radar.read_text(encoding="utf-8")
-        for token in ("BEGIN:VCALENDAR", "END:VCALENDAR", "DTSTART;TZID=Asia/Shanghai", "URL:https://dean.pku.edu.cn/"):
+        for token in (
+            "BEGIN:VCALENDAR",
+            "END:VCALENDAR",
+            "DTSTART;TZID=Asia/Shanghai",
+            "URL:https://dean.pku.edu.cn/",
+        ):
             if token not in radar_text:
                 fail(f"four-year-radar.html: incomplete calendar export ({token})", errors)
+
+    registry = ROOT / "references/source-registry.md"
+    if registry.exists():
+        registry_text = registry.read_text(encoding="utf-8")
+        for domain in (
+            "fresh.pku.edu.cn",
+            "dean.pku.edu.cn",
+            "zwb.pku.edu.cn",
+            "cyzx.pku.edu.cn",
+            "hospital.pku.edu.cn",
+            "bwb.pku.edu.cn",
+            "sfao.pku.edu.cn",
+        ):
+            if domain not in registry_text:
+                fail(f"source registry missing core domain: {domain}", errors)
 
     unfinished_markers = ("TO" + "DO", "T" + "BD", "PLACE" + "HOLDER", "lorem" + " ipsum")
     for path in ROOT.rglob("*"):
@@ -137,6 +250,7 @@ def main() -> int:
     print(f"- root: {ROOT}")
     print(f"- fixed behavior cases: {len(cases)}")
     print(f"- HTML examples: {len(html_paths)}")
+    print("- V3 workbench example: 1")
     return 0
 
 

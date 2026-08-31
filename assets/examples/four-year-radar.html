@@ -76,7 +76,7 @@
     }
     controls.forEach(button=>button.addEventListener('click',()=>show(button.dataset.filter)));
     const calendar=document.querySelector('#calendar');
-    const ics='BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//PKU Freshman Navigator//V2//ZH\r\nBEGIN:VEVENT\r\nUID:demo-course-check@pku-navigator\r\nDTSTART;TZID=Asia/Shanghai:20260911T170000\r\nSUMMARY:核对选课结果（演示日期）\r\nDESCRIPTION:仅导出已由当年官方通知核实的日期。\r\nURL:https://dean.pku.edu.cn/\r\nEND:VEVENT\r\nEND:VCALENDAR';
+    const ics='BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//PKU Freshman Navigator//V3//ZH\r\nBEGIN:VEVENT\r\nUID:demo-course-check-v3@pku-navigator\r\nDTSTART;TZID=Asia/Shanghai:20260911T170000\r\nSUMMARY:核对选课结果（演示日期）\r\nDESCRIPTION:仅导出已由当年官方通知核实的日期。\r\nURL:https://dean.pku.edu.cn/\r\nEND:VEVENT\r\nEND:VCALENDAR';
     calendar.addEventListener('click',()=>{const blob=new Blob([ics],{type:'text/calendar;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='pku-verified-action.ics';a.click();URL.revokeObjectURL(url)});
   </script>
 </body>
