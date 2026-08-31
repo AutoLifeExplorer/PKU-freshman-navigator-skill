@@ -10,7 +10,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-EXPECTED_CASES = 26
+EXPECTED_CASES = 33
 EXPECTED_ENGINES = {
     "action_brief",
     "decision_panel",
@@ -94,6 +94,18 @@ def main() -> int:
         ids = [case.get("id") for case in cases]
         if len(ids) != len(set(ids)):
             fail("duplicate test case ids", errors)
+        required_regressions = {
+            "dining-nearby-open-discovery",
+            "nearby-service-default-first",
+            "current-commercial-facts",
+            "preferred-source-blocked",
+            "partial-verification-best-effort",
+            "stale-experience-evidence",
+            "current-campus-events-best-effort",
+        }
+        missing_regressions = required_regressions - set(ids)
+        if missing_regressions:
+            fail(f"missing search-delivery regression cases: {sorted(missing_regressions)}", errors)
         required = {
             "id",
             "prompt",

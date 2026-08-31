@@ -258,5 +258,75 @@
     "must_ask": false,
     "risk": "medium",
     "invariants": ["state_supported_slice_once", "official_access_rules_only", "one_next_action", "no_full_tourist_guide"]
+  },
+  {
+    "id": "dining-nearby-open-discovery",
+    "prompt": "北大附近有什么好吃的餐厅？",
+    "route": "campus_life",
+    "must_search": true,
+    "expected_engine": "decision_panel",
+    "must_ask": false,
+    "risk": "low",
+    "invariants": ["search_before_answer", "off_campus_services_allowed", "five_to_eight_grouped_candidates", "source_per_candidate", "no_self_search_deflection"]
+  },
+  {
+    "id": "nearby-service-default-first",
+    "prompt": "北大周边哪里可以买到生活用品？",
+    "route": "campus_life",
+    "must_search": true,
+    "expected_engine": "decision_panel",
+    "must_ask": false,
+    "risk": "low",
+    "invariants": ["explicit_reasonable_assumption", "answer_before_refinement", "grouped_exploration", "no_forced_single_best"]
+  },
+  {
+    "id": "current-commercial-facts",
+    "prompt": "北大东门附近今晚还营业的打印店有哪些，大概多少钱？",
+    "route": "place",
+    "must_search": true,
+    "expected_engine": "decision_panel",
+    "must_ask": false,
+    "risk": "low",
+    "invariants": ["current_tool_attempt", "freshness_by_volatility", "cross_check_opening_and_price", "retrieval_date_visible", "no_fake_live_fact"]
+  },
+  {
+    "id": "preferred-source-blocked",
+    "prompt": "如果点评网站打不开，也帮我查北大附近适合同学聚餐的地方。",
+    "route": "campus_life",
+    "must_search": true,
+    "expected_engine": "decision_panel",
+    "must_ask": false,
+    "risk": "low",
+    "invariants": ["try_independent_alternative_sources", "deliver_best_available_results", "specific_source_limit_only", "no_app_deflection"]
+  },
+  {
+    "id": "partial-verification-best-effort",
+    "prompt": "帮我找北大附近能吃夜宵的地方；营业时间查不全也先给我能确认的。",
+    "route": "campus_life",
+    "must_search": true,
+    "expected_engine": "decision_panel",
+    "must_ask": false,
+    "risk": "low",
+    "invariants": ["confirmed_results_first", "item_local_uncertainty", "partial_evidence_not_empty_answer", "verification_gap_specific"]
+  },
+  {
+    "id": "stale-experience-evidence",
+    "prompt": "一篇三年前的攻略说北大附近这家店便宜又好吃，现在还能照着去吗？",
+    "route": "campus_life",
+    "must_search": true,
+    "expected_engine": "action_brief",
+    "must_ask": false,
+    "risk": "low",
+    "invariants": ["search_current_status", "old_source_not_current_fact", "subjective_basis_visible", "exact_date_visible"]
+  },
+  {
+    "id": "current-campus-events-best-effort",
+    "prompt": "这周北大有哪些值得参加的公开讲座？信息不全也先列出确认过的。",
+    "route": "campus_participation",
+    "must_search": true,
+    "expected_engine": "time_workbench",
+    "must_ask": false,
+    "risk": "low",
+    "invariants": ["current_search_required", "verified_events_first", "direct_source_and_date", "no_empty_verification_mode"]
   }
 ]
