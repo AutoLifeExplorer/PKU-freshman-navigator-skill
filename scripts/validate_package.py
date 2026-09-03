@@ -10,7 +10,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-EXPECTED_CASES = 33
+EXPECTED_CASES = 36
 EXPECTED_ENGINES = {
     "action_brief",
     "decision_panel",
@@ -68,6 +68,22 @@ def main() -> int:
         "references/web-ui-spec.md",
         "references/v3-output-system-design.md",
         "references/maintenance.md",
+        "references/baoyan-playbook.md",
+        "references/baoyan-sources/index.md",
+        "references/baoyan-sources/searchable/2020-2023-question-bank.md",
+        "references/baoyan-sources/searchable/senior-hu-question-bank.md",
+        "references/baoyan-sources/searchable/tsinghua-review-plan.md",
+        "references/baoyan-sources/searchable/resume-interview-mocklist.md",
+        "references/baoyan-sources/searchable/image-notes.md",
+        "references/baoyan-sources/originals/25胡师姐新传保研真题.pdf",
+        "references/baoyan-sources/originals/7.2 2020-2023保研院校真题资料.docx",
+        "references/baoyan-sources/originals/微信图片_20260903092740_17884_1.png",
+        "references/baoyan-sources/originals/微信图片_20260903092934_17889_1.jpg",
+        "references/baoyan-sources/originals/微信图片_20260903092936_17890_1.jpg",
+        "references/baoyan-sources/originals/微信图片_20260903092937_17891_1.jpg",
+        "references/baoyan-sources/originals/清华复习计划表.docx",
+        "references/baoyan-sources/originals/简历面mocklist.docx",
+        "scripts/build_baoyan_references.py",
         "assets/examples/freshman-arrival-workbench.html",
         "assets/examples/study-place-decision.html",
         "assets/examples/resource-unlock.html",
@@ -141,6 +157,7 @@ def main() -> int:
             "campus_participation",
             "rule",
             "planning",
+            "baoyan",
             "fallback",
             "limited_scope",
         }

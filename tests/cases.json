@@ -328,5 +328,35 @@
     "must_ask": false,
     "risk": "low",
     "invariants": ["current_search_required", "verified_events_first", "direct_source_and_date", "no_empty_verification_mode"]
+  },
+  {
+    "id": "baoyan-international-communication-questions",
+    "prompt": "帮我找清华国际新闻传播方向往年的中英文保研面试题，并告诉我出处。",
+    "route": "baoyan",
+    "must_search": false,
+    "expected_engine": "decision_panel",
+    "must_ask": false,
+    "risk": "low",
+    "invariants": ["local_source_retrieval", "original_filename_and_locator", "experience_label", "no_question_prediction"]
+  },
+  {
+    "id": "baoyan-stale-deadline",
+    "prompt": "资料截图里清华新传是9月5日笔试，今年我也按这个日期准备报名可以吗？",
+    "route": "baoyan",
+    "must_search": true,
+    "expected_engine": "time_workbench",
+    "must_ask": false,
+    "risk": "high",
+    "invariants": ["historical_screenshot_only", "current_official_notice_required", "no_inferred_year", "safe_preparation_action"]
+  },
+  {
+    "id": "baoyan-resume-mock",
+    "prompt": "我要申请国际新闻传播，结合我的科研经历逐题模拟简历面试。",
+    "route": "baoyan",
+    "must_search": false,
+    "expected_engine": "editable_artifact",
+    "must_ask": true,
+    "risk": "medium",
+    "invariants": ["one_question_at_a_time", "request_redacted_experience", "structured_feedback", "no_invented_achievement"]
   }
 ]
